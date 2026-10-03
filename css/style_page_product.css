@@ -1,0 +1,315 @@
+body {
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+}
+
+main {
+    flex: 1;
+}
+
+.breadcrumbs {
+    font-size: 14px;
+    margin: 25px 0 20px 0;
+    gap: 5px;
+    justify-content: start;
+}
+
+.product {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 40px;
+}
+
+.main-image {
+    position: relative;
+    aspect-ratio: 1/1;
+    border-radius: 9px;
+    overflow: hidden;
+}
+
+.main-image img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.nav {
+    position: absolute;
+    top: 50%;
+    width: 40px;
+    height: 40px;
+    background-color: rgba(255, 255, 255, 0.836);
+    border-radius: 50%;
+    border: none;
+    font-size: 15px;
+}
+
+.nav:hover {
+    background-color: white;
+}
+
+.prev {
+    left: 10px;
+}
+
+.next {
+    right: 10px;
+}
+
+.other-images {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+    margin-top: 15px;
+    gap: 15px;
+}
+
+.im {
+    width: 100%;
+    aspect-ratio: 1/1;
+    object-fit: cover;
+    border-radius: 9px;
+    border: 2px solid #cccccc;
+    transition: 0.2s;
+}
+
+.im.active {
+    border-color: #e75f10;
+}
+
+.product-info {
+    padding: 0;
+}
+
+.product-info h1 {
+    margin: 0;
+}
+
+.product-price {
+    display: flex;
+    align-items:end;
+    margin: 10px 0;
+}
+
+.product-price span {
+    margin: 0 0 7px 10px;
+    color: #6b6a6a;
+}
+
+.features {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+    border-bottom: 1px solid #cccccc6e;
+    margin: 20px 0;
+    padding-bottom: 20px;
+}
+
+.feature {
+    display: flex;
+    flex-wrap: nowrap;
+    gap: 10px;
+    align-items: center;
+    font-size: 14px;
+}
+
+.feature span {
+    font-size: 16px;
+    margin-bottom: 10px;
+    color: #e75f10;
+}
+
+.feature .title {
+    font-weight: 600;
+    margin: 0;
+}
+
+.feature .text {
+    font-size: 12px;
+    margin: 0;
+    color: #6b6a6a;
+}
+
+.quan-box {
+    display: flex;
+    gap: 10px;
+    margin-bottom: 10px;
+}
+
+.quan-box button {
+    background-color: white;
+    border: 1px solid #cccccc;
+    height: 40px;
+    width: 40px;
+    border-radius: 9px;
+    font-size: 16px;
+    font-weight: 600;
+    padding-bottom: 5px;
+    transition: 0.2s;
+}
+
+.quan-box button:hover {
+    background-color: #cccccc25;
+}
+
+.quan-box input {
+    border: 1px solid #cccccc;
+    border-radius: 9px;
+    text-align: center;
+    font-size: 16px;
+    width: 15%;
+}
+
+.quan-box input:focus{
+    outline: none;
+    border: 2px solid #e75f10;
+}
+
+.buy-now-btn {
+    margin-top: 15px;
+    height: 55px;
+    font-size: 16px;
+    font-weight: 500;
+    color: #e75f10;
+    background-color: white;
+    border: 2px solid #e75f10;
+    width: 100%;
+    border-radius: 9px;
+    transition: 0.2s;
+}
+
+.buy-now-btn:hover {
+    background-color: #e75f1018
+}
+
+.description {
+    margin-top: 30px;
+}
+
+.description h2 {
+    font-size: 20px;
+}
+
+.description p {
+    color: #6b6a6a;
+    line-height: 25px;
+}
+
+.accordion {
+    margin-top: 30px;
+    border: 1px solid #cccccc6e;
+    border-bottom: white;
+    border-radius: 9px;
+    overflow: hidden;
+    transition: 0.3s;
+}
+
+.accordion.open {
+    padding-bottom: 30px;
+}
+
+.accordion-btn {
+    background: none;
+    border: none;
+    width: 100%;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0 20px;
+}
+
+.accordion-btn h2 {
+    font-size: 20px;
+}
+
+#arrow {
+    color: #6b6a6a;
+    transition: 0.2s;
+}
+
+.accordion.open #arrow {
+    transform: rotate(180deg);
+}
+
+.accordion-content {
+    max-height: 0;
+    overflow: hidden;
+    transition: 0.3s ease;
+}
+
+.accordion.open .accordion-content {
+    max-height: 800px;
+}
+
+.specs {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    background-color: #cccccc25;
+    margin: 0 30px;
+    border-radius: 12px;
+    padding: 10px 25px 25px 25px;
+    gap: 0 30px;
+}
+
+.specs .title{
+    color: #6b6a6a;
+    font-size: 14px;
+    margin-bottom: 5px;
+}
+
+.specs .text {
+    font-weight: 600;
+    margin-top: 5px;
+}
+
+.spec {
+    border-bottom: 1px solid #cccccc6e;
+}
+
+.related-container {
+    margin: 50px 0;
+}
+
+.product-info h3{
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+#quan::-webkit-outer-spin-button, #quan::-webkit-inner-spin-button {
+    -webkit-appearance: none;
+}
+
+.add-delete-btns {
+    display: flex;
+    margin-top: 30px;
+    gap: 10px;
+}
+
+#deleteBtnSecondary {
+    border: 2px solid rgb(229, 0, 0);
+    border-radius: 9px;
+    width: 60px;
+    background-color: white;
+    color: rgb(229, 0, 0);
+    font-size: 16px;
+}
+
+#deleteBtnSecondary:hover {
+    background-color: #6b6a6a20;
+    transition: 0.2s;
+}
+
+@media (max-width: 1024px) {
+    .product {
+        grid-template-columns: 1fr;
+    }   
+}
+
+@media (max-width: 768px) {
+    .products-grid {
+        grid-template-columns: repeat(2, 1fr) !important;
+    }
+    .specs {
+        grid-template-columns: 1fr;
+    }
+}

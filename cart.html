@@ -1,0 +1,199 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>E-commerce Website Design</title>
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="css/style_page_cart.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+</head>
+
+<body>
+    <header>
+        <div class="container header-content">
+            <a href="index.html" class="logo">
+                <div class="logo-icon">BM</div>
+                <span class="logo-text">BuildMart</span>
+            </a>
+            <nav>
+                <a href="index.html">Products</a>
+                <a href="categories.html">Categories</a>
+                <a href="deals.html">Deals</a>
+                <a href="about.html">About</a>
+            </nav>
+            <div class="search-bar">
+                <i class="fa-solid fa-magnifying-glass search-icon"></i>
+                <input type="text" placeholder="Search products...">
+            </div>
+            <div class="search-icon-mobile">
+                <i class="fa-solid fa-magnifying-glass"></i>
+            </div>
+            <a href="cart.html" class="cart"><i class="fa-solid fa-cart-shopping"></i><span class="count-products"></span></a>
+            <button class="menu-mobile"><i class="fa-solid fa-bars"></i></button>
+        </div>
+        <div class="menu-content-mobile" id="menuMobile">
+            <div class="search-bar mobile">
+                <i class="fa-solid fa-magnifying-glass search-icon"></i>
+                <input type="text" placeholder="Search products...">
+            </div>
+            <nav>
+                <a href="index.html">Products</a>
+                <a href="categories.html">Categories</a>
+                <a href="deals.html">Deals</a>
+                <a href="about.html">About</a>
+            </nav>
+        </div>
+    </header>
+    <main class="cart-page">
+        <div class="container container-main">
+            <div class="cart-empty" style="margin: 100px 0 200px 0;">
+                <h1>Your Cart is Empty</h1>
+                <p>Start shopping to add items to your cart</p>
+                <a href="index.html" class="browse-products-btn">
+                    Browse Products <span><i class="fa-solid fa-arrow-right"></i></span>
+                </a>
+            </div>
+            <div class="cart-content" style="display: none;">
+                <div class="cart-container">
+                    <h1>Shopping Cart</h1>
+                    <div class="cart-layout">
+                        <div class="cart-left">
+                            <div class="cart-products">
+                                <div class="cart-header">
+                                    <p>Product</p>
+                                    <p>Price</p>
+                                    <p>Quantity</p>
+                                    <p>Total</p>
+                                </div>
+                                <div class="cart-items-container">
+                                    <div id="cartItems"></div>
+                                </div>
+                            </div>
+                            <div class="promo-box">
+                                <h3>Have a promo code?</h3>
+                                <div class="promo-form">
+                                    <input type="text" placeholder="Enter promo code" id="promoInput">
+                                    <button id="promoBtn">Apply</button>
+                                </div>
+                                <p class="promoHint">Try code: BUILD10 for 10% off</p>
+                            </div>
+                        </div>
+                        <div class="cart-right">
+                            <div class="cart-summary">
+                                <h2>Order Summary</h2>
+                                <div class="summary-line">
+                                    <p>Subtotal</p>
+                                    <p id="subtotal">$0</p>
+                                </div>
+                                <div class="summary-line">
+                                    <p>Tax (8%)</p>
+                                    <p id="tax">$0</p>
+                                </div>
+                                <div class="discount-line">
+                                    <p style="color: green;">Discount (10%)</p>
+                                    <p id="discount" style="color: green;">0</p>
+                                </div>
+                                <div class="summary-total">
+                                    <h2>Total</h2>
+                                    <h2 id="total">$0</h2>
+                                </div>
+                                <div class="buttons-total">
+                                    <button class="check-btn">Proceed to Checkout <i class="fa-solid fa-arrow-right"></i></button>
+                                    <a href="index.html" class="cont-btn">Continue Shopping</a>
+                                </div>
+                            </div>
+                            <div class="shipping-info">
+                                <h3>Shipping Information</h3>
+                                <div class="shipping-items">
+                                    <div class="shipping-item">
+                                        <div class="icon"><i class="fa-regular fa-calendar"></i></div>
+                                        <div>
+                                            <p class="title">Estimated Delivery</p>
+                                            <p class="text">3-5 business days</p>
+                                        </div>
+                                    </div>
+                                    <div class="shipping-item">
+                                        <div class="icon"><i class="fa-solid fa-location-dot"></i></div>
+                                        <div>
+                                            <p class="title">Shipping Address</p>
+                                            <p class="text">123 Construction Ave<br>Builder City, BC 12345<br>United States</p>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+    <footer>
+        <div class="container">
+            <div class="footer-grid">
+                <div class="footer-section">
+                    <h3>BuildMart</h3>
+                    <p>Your trusted source for premium building materials and construction supplies since 1995.</p>
+                    <div class="socials">
+                        <a href="#"><i class="fa-brands fa-facebook-f"></i></a>
+                        <a href="#"><i class="fa-brands fa-twitter"></i></a>
+                        <a href="#"><i class="fa-brands fa-instagram"></i></a>
+                        <a href="#"><i class="fa-brands fa-linkedin-in"></i></a>
+                    </div>
+                </div>         
+            <div class="links">
+                <h3>Quick Links</h3>
+                <ul>
+                    <li><a href="about.html">About Us</a></li>
+                    <li><a href="index.html">Products</a></li>
+                    <li><a href="#">Delivery Info</a></li>
+                    <li><a href="#">Returns Policy</a></li>
+                </ul>
+            </div>
+            <div class="links">
+                <h3>Customer Service</h3>
+                <ul>
+                    <li><a href="#">Contact Us</a></li>
+                    <li><a href="#">FAQs</a></li>
+                    <li><a href="#">Shipping & Tracking</a></li>
+                    <li><a href="#">Privacy Policy</a></li>
+                </ul>
+            </div>
+            <div class="newsletter">
+                <h3>Newsletter</h3>
+                <p>Subscribe for updates and exclusive deals.</p>
+                <div class="newsletter-form">
+                    <input type="email" placeholder="Your email">
+                    <button>
+                        <i class="fa-solid fa-envelope"></i>
+                    </button>
+                </div>
+            </div>
+            </div>
+            <div class="contact">
+                <div>
+                    <p class="title">Phone</p>
+                    <p>1-800-BUILD-MART</p>
+                </div>
+                <div>
+                    <p class="title">Email</p>
+                    <p>support@buildmart.com</p>
+                </div>
+                <div>
+                    <p class="title">Address</p>
+                    <p>123 Construction Ave, Builder City, BC 12345</p>
+                </div>
+            </div>
+            <div class="copyright">
+                <p>&copy; 2026 BuildMart. All rights reserved.</p>
+            </div>
+        </div>
+    </footer>
+    <script src="js/cart/change_quantity.js"></script>
+    <script src="js/cart/show_cart_products.js"></script>
+    <script src="js/cart/delete_product.js"></script>
+    <script src="js/promo_code/promo_code.js"></script>
+    <script src="js/mobile/menu.js"></script>
+</body>
+</html>

@@ -1,0 +1,312 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>E-commerce Website Design</title>
+    <link rel="stylesheet" href="css/style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+</head>
+<body> 
+    <header>
+        <div class="container header-content">
+            <a href="index.html" class="logo">
+                <div class="logo-icon">BM</div>
+                <span class="logo-text">BuildMart</span>
+            </a>
+            <nav>
+                <a href="index.html">Products</a>
+                <a href="categories.html">Categories</a>
+                <a href="deals.html">Deals</a>
+                <a href="about.html">About</a>
+            </nav>
+            <div class="search-bar">
+                <i class="fa-solid fa-magnifying-glass search-icon"></i>
+                <input type="text" placeholder="Search products...">
+            </div>
+            <div class="search-icon-mobile">
+                <i class="fa-solid fa-magnifying-glass"></i>
+            </div>
+            <a href="cart.html" class="cart"><i class="fa-solid fa-cart-shopping"></i><span class="count-products"></span></a>
+            <button class="menu-mobile"><i class="fa-solid fa-bars"></i></button>
+        </div>
+        <div class="menu-content-mobile" id="menuMobile">
+            <div class="search-bar mobile">
+                <i class="fa-solid fa-magnifying-glass search-icon"></i>
+                <input type="text" placeholder="Search products...">
+            </div>
+            <nav>
+                <a href="index.html">Products</a>
+                <a href="categories.html">Categories</a>
+                <a href="deals.html">Deals</a>
+                <a href="about.html">About</a>
+            </nav>
+        </div>
+    </header>
+    <main>
+        <div class="toast-container">
+        </div>
+        <section class="products">
+            <div class="container">
+                <div class="products-header">
+                    <h1>Building Materials</h1>
+                    <p>Premium construction supplies for all your projects</p>
+                </div>
+                <div class="products-controls">
+                    <div class="filters">
+                        <button class="filter-btn" id="toggleFilter">
+                            <i class="fa-solid fa-sliders"></i>
+                            Show Filters
+                        </button>
+                        <span class="products-count">Showing 6 products</span>
+                        
+                    </div>
+                    <div class="sort">
+                        <p style="font-weight: 600; color: #6b6a6a;;">Sort by:</p>
+                        <select>
+                            <option value="name-az">Name (A-Z)</option>
+                            <option value="name-za">Name (Z-A)</option>
+                            <option value="price-low">Price (Low to High)</option>
+                            <option value="price-high">Price (High to Low)</option>     
+                        </select>
+                    </div>
+                </div>
+                <div id="panelFilters" class="filters-panel">
+                    <div class="filter-box">
+                        <div class="filter-row">
+                            <div class="filter-group">
+                                <h3>Minimum Rating</h3>
+                                <div class="rating-options-row">
+                                    <label class="rating-option">
+                                        <input type="checkbox" value="5">
+                                        <span>5+ Stars</span>
+                                    </label>
+                                    <label class="rating-option">
+                                        <input type="checkbox" value="4">
+                                        <span>4+ Stars</span>
+                                    </label>
+                                    <label class="rating-option">
+                                        <input type="checkbox" value="3">
+                                        <span>3+ Stars</span>
+                                    </label>
+                                </div>
+                            </div>
+                            <div class="filter-group">
+                                <div class="slider-group">
+                                    <h3>Price Range</h3>
+                                    <div class="slider-container">
+                                        <div class="slider-track"></div>
+                                        <div class="slider-range" id="sliderRange"></div>
+                                        <input type="range" min="0" max="390" value="0" step="10" id="minPrice">
+                                        <input type="range" min="0" max="400" value="400" step="10" id="maxPrice">
+                                        <div class="price-labels">
+                                            <span id="minValue">$0</span>
+                                            <span id="maxValue">$400</span>
+                                        </div>
+                                    </div>
+                                </div>           
+                            </div>
+                            <div class="filter-action">
+                                <button class="clear-filters-btn" id="clearBtn">
+                                    Clear All Filters
+                                </button>
+                            </div>                    
+                        </div>
+                    </div>   
+                </div>
+                <div id="noProductsMessage" class="no-products" >
+                    <p>No products match ypur filters.</p>
+                    <button id="clearBtn2" class="clear-filters-btn">Clear filters</button>
+                </div>
+                <div class="products-grid">
+                    <div class="product-card" data-rating="3.5" data-price="45.99" data-id="1" data-name="Exterior Paint Set" data-category="Paint & Coatings" data-img="img/product_1.jfif">
+                        <div class="product-image">
+                            <a href="product.html?id=1"><img src="img/product_1.jfif" alt="product"></a>
+                        </div>
+                        <div class="product-info">
+                            <a href="product.html?id=1"><h3>Exterior Paint Set</h3></a>
+                            <div class="rating">
+                                <i class="fa-solid fa-star"></i>
+                                <i class="fa-solid fa-star"></i>
+                                <i class="fa-solid fa-star"></i>
+                                <i class="fa-solid fa-star-half"></i>
+                                <i class="fa-regular fa-star" style="color: #ccc;"></i>
+                                <span>(3.5)</span>
+                            </div>
+                            <div class="price">$45.99</div>
+                            <div class="category">Paint & Coatings</div>
+                            <button class="add-to-cart"><i class="fa-solid fa-cart-shopping"></i> Add to Cart</button>
+                        </div>
+                    </div>
+                    <div class="product-card" data-rating="4.5" data-price="52.99" data-id="2" data-name="Plywood Sheets" data-category="Wood & Lumber" data-img="img/product_2.jfif">
+                        <div class="product-image">
+                            <a href="product.html?id=2"><img src="img/product_2.jfif" alt="product"></a>
+                        </div>
+                        <div class="product-info">
+                            <a href="product.html?id=2"><h3>Plywood Sheets</h3></a>
+                            <div class="rating">
+                                <i class="fa-solid fa-star"></i>
+                                <i class="fa-solid fa-star"></i>
+                                <i class="fa-solid fa-star"></i>
+                                <i class="fa-solid fa-star"></i>
+                                <i class="fa-solid fa-star-half"></i>
+                                <span>(4.5)</span>
+                            </div>
+                            <div class="price">$52.99</div>
+                            <div class="category">Wood & Lumber</div>
+                            <button class="add-to-cart"><i class="fa-solid fa-cart-shopping"></i> Add to Cart</button>
+                        </div>
+                    </div>
+                    <div class="product-card" data-rating="5.0" data-price="24.99" data-id="3" data-name="Premium Cement Bags" data-category="Cement & Concrete" data-img="img/product_3.jfif">
+                        <div class="product-image">
+                            <a href="product.html?id=3"><img src="img/product_3.jfif" alt="product"></a>
+                        </div>
+                        <div class="product-info">
+                            <a href="product.html?id=3"><h3>Premium Cement Bags</h3></a>
+                            <div class="rating">
+                                <i class="fa-solid fa-star"></i>
+                                <i class="fa-solid fa-star"></i>
+                                <i class="fa-solid fa-star"></i>
+                                <i class="fa-solid fa-star"></i>
+                                <i class="fa-solid fa-star"></i>
+                                <span>(5.0)</span>
+                            </div>
+                            <div class="price">$24.99</div>
+                            <div class="category">Cement & Concrete</div>
+                            <button class="add-to-cart"><i class="fa-solid fa-cart-shopping"></i> Add to Cart</button>
+                        </div>
+                    </div>
+                    <div class="product-card" data-rating="4.5" data-price="89.99" data-id="4" data-name="Premium Lumber Planks" data-category="Wood & Lumber" data-img="img/product_4.jfif">
+                        <div class="product-image">
+                            <a href="product.html?id=4"><img src="img/product_4.jfif" alt="product"></a>
+                        </div>
+                        <div class="product-info">
+                            <a href="product.html?id=4"><h3>Premium Lumber Planks</h3></a>
+                            <div class="rating">
+                                <i class="fa-solid fa-star"></i>
+                                <i class="fa-solid fa-star"></i>
+                                <i class="fa-solid fa-star"></i>
+                                <i class="fa-solid fa-star"></i>
+                                <i class="fa-solid fa-star-half"></i>
+                                <span>(4.5)</span>
+                            </div>
+                            <div class="price">$89.99</div>
+                            <div class="category">Wood & Lumber</div>
+                            <button class="add-to-cart"><i class="fa-solid fa-cart-shopping"></i> Add to Cart</button>
+                        </div>
+                    </div>
+                    <div class="product-card" data-rating="4.0" data-price="0.89" data-id="5" data-name="Red Clay Bricks" data-category="Bricks & Blocks" data-img="img/product_5.jfif">
+                        <div class="product-image">
+                            <a href="product.html?id=5"><img src="img/product_5.jfif" alt="product"></a>
+                        </div>
+                        <div class="product-info">
+                            <a href="product.html?id=5"><h3>Red Clay Bricks</h3></a>
+                            <div class="rating">
+                                <i class="fa-solid fa-star"></i>
+                                <i class="fa-solid fa-star"></i>
+                                <i class="fa-solid fa-star"></i>
+                                <i class="fa-solid fa-star"></i>
+                                <i class="fa-regular fa-star" style="color: #ccc;"></i>
+                                <span>(4.0)</span>
+                            </div>
+                            <div class="price">$0.89</div>
+                            <div class="category">Bricks & Blocks</div>
+                            <button class="add-to-cart"><i class="fa-solid fa-cart-shopping"></i> Add to Cart</button>
+                        </div>
+                    </div>
+                    <div class="product-card" data-rating="5.0" data-price="349.99" data-id="6" data-name="Steel I-Beams" data-category="Steel & Metal" data-img="img/product_6.jfif">
+                        <div class="product-image">
+                            <a href="product.html?id=6"><img src="img/product_6.jfif" alt="product"></a>
+                        </div>
+                        <div class="product-info">
+                            <a href="product.html?id=6"><h3>Steel I-Beams</h3></a>
+                            <div class="rating">
+                                <i class="fa-solid fa-star"></i>
+                                <i class="fa-solid fa-star"></i>
+                                <i class="fa-solid fa-star"></i>
+                                <i class="fa-solid fa-star"></i>
+                                <i class="fa-solid fa-star"></i>
+                                <span>(5.0)</span>
+                            </div>
+                            <div class="price">$349.99</div>
+                            <div class="category">Steel & Metal</div>
+                            <button class="add-to-cart"><i class="fa-solid fa-cart-shopping"></i> Add to Cart</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+    <footer>
+        <div class="container">
+            <div class="footer-grid">
+                <div class="footer-section">
+                    <h3>BuildMart</h3>
+                    <p>Your trusted source for premium building materials and construction supplies since 1995.</p>
+                    <div class="socials">
+                        <a href="#"><i class="fa-brands fa-facebook-f"></i></a>
+                        <a href="#"><i class="fa-brands fa-twitter"></i></a>
+                        <a href="#"><i class="fa-brands fa-instagram"></i></a>
+                        <a href="#"><i class="fa-brands fa-linkedin-in"></i></a>
+                    </div>
+                </div>
+            <div class="links">
+                <h3>Quick Links</h3>
+                <ul>
+                    <li><a href="about.html">About Us</a></li>
+                    <li><a href="index.html">Products</a></li>
+                    <li><a href="#">Delivery Info</a></li>
+                    <li><a href="#">Returns Policy</a></li>
+                </ul>
+            </div>
+            <div class="links">
+                <h3>Customer Service</h3>
+                <ul>
+                    <li><a href="#">Contact Us</a></li>
+                    <li><a href="#">FAQs</a></li>
+                    <li><a href="#">Shipping & Tracking</a></li>
+                    <li><a href="#">Privacy Policy</a></li>
+                </ul>
+            </div>
+            <div class="newsletter">
+                <h3>Newsletter</h3>
+                <p>Subscribe for updates and exclusive deals.</p>
+                <div class="newsletter-form">
+                    <input type="email" placeholder="Your email">
+                    <button>
+                        <i class="fa-solid fa-envelope"></i>
+                    </button>
+                </div>
+            </div>
+            </div>
+            <div class="contact">
+                <div>
+                    <p class="title">Phone</p>
+                    <p>1-800-BUILD-MART</p>
+                </div>
+                <div>
+                    <p class="title">Email</p>
+                    <p>support@buildmart.com</p>
+                </div>
+                <div>
+                    <p class="title">Address</p>
+                    <p>123 Construction Ave, Builder City, BC 12345</p>
+                </div>
+            </div>
+            <div class="copyright">
+                <p>&copy; 2026 BuildMart. All rights reserved.</p>
+            </div>
+        </div>
+    </footer>
+
+<script src="js/filter/using_filter.js"></script>
+<script src="js/filter/show_filters.js"></script>
+<script src="js/filter/filter_checkbox.js"></script>
+<script src="js/filter/filter_slider.js"></script>
+<script src="js/filter/filter_clear.js"></script>
+<script src="js/cart/add_to_cart.js"></script>
+<script src="js/sort/sort.js"></script>
+<script src="js/mobile/menu.js"></script>
+</body>
+</html>
