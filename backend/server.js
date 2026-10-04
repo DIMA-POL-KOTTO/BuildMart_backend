@@ -1,14 +1,16 @@
 import express from "express";
+import path from "path";
 
 const app = express();
+const PORT = 8080;
+const FRONTEND_DIR = path.join(import.meta.dirname, "..", 'frontend');
+
+app.use(express.static(FRONTEND_DIR));
 
 app.get("/", (req, res) => {
-  res.json({
-    message: "BuildMart is running!",
-    status: 'ok',
-  });
+  res.sendFile(path.join(FRONTEND_DIR, "index.html"));
 });
 
-app.listen(8080, () => {
-    console.log("Server is running on http://localhost:8080");
+app.listen(PORT, () => {
+    console.log(`Server is running on http://localhost:${PORT}`);
 })
