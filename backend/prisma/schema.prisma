@@ -11,3 +11,14 @@ generator client {
 datasource db {
   provider = "mysql"
 }
+
+model Product {
+  id              Int         @id @default(autoincrement())
+  title           String      
+  description     String      @db.Text
+  price           Decimal     @db.Decimal(10,2)
+  rating          Float       @default(0)
+  images          Json
+  stockQuantity  Int         @map("stock_quantity")
+  createdAt       DateTime    @default(now()) @map("created_at")
+}
