@@ -171,6 +171,8 @@ function loadProduct() {
     });
 }
 
+
+
 loadProduct();
 showDeleteBtn();
 
