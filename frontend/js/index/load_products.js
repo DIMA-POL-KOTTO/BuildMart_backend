@@ -16,7 +16,7 @@ async function loadProducts() {
                 </a>
             </div>
             <div class="product-info">
-                <a href="product.html?id=${product.id}"><h3>${product.title}</h3></a>
+                <a href="products?id=${product.id}"><h3>${product.title}</h3></a>
                 <div class="rating">
                     ${renderStars(product.rating)}
                     <span>(${product.rating})</span>
