@@ -17,7 +17,28 @@ const prisma = new PrismaClient({ adapter });
 
 router.get("/products", async (req, res) => {
   try {
-    const products = await prisma.product.findMany();
+    const { min_price, max_price, category, search, sorted_by } = req.query;
+    const where = {};
+    if (min_price) {
+      where.price = { gte: Number(min_price) };
+    }
+    if (max_price) {
+      where.price = { ...where.price, lte: Number(max_price) };
+    }
+    if (category) {
+      where.category = category;
+    }
+    if (search) {
+      where.title = { contains: search };
+    }
+    let orderBy = undefined;
+    if (sorted_by === "up") {
+      orderBy = { price: "asc" };
+    }
+    if (sorted_by === "down") {
+      orderBy = { price: "desc" };
+    }
+    const products = await prisma.product.findMany({where, orderBy});
     res.json({
         items: products,
         meta: {
