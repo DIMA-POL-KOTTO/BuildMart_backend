@@ -17,35 +17,59 @@ const prisma = new PrismaClient({ adapter });
 
 router.get("/products", async (req, res) => {
   try {
-    const { min_price, max_price, category, search, sorted_by } = req.query;
-    const where = {};
-    if (min_price) {
-      where.price = { gte: Number(min_price) };
+    const { min_price, max_price, min_rating, category, search, sorted_by, page="1", limit="12" } = req.query;
+    const currentPage = Number(page);
+    const pageLimit = Number(limit);
+    if (!Number.isInteger(currentPage) || currentPage < 1 || !Number.isInteger(pageLimit) || pageLimit < 1 || pageLimit > 100) {
+      return res.status(400).json({
+        error: "Invalid page or limit"
+      })
     }
-    if (max_price) {
-      where.price = { ...where.price, lte: Number(max_price) };
+    const skip = (currentPage - 1) * pageLimit;
+    const where = {};
+    if (min_price !== undefined || max_price !== undefined) {
+      where.price = {};
+      if (min_price !== undefined) {
+        where.price.gte = Number(min_price);
+      }
+      if (max_price !== undefined) {
+        where.price.lte = Number(max_price);
+      }
+    }
+    if (min_rating !== undefined) {
+      const rating = Number(min_rating);
+      if (min_rating.trim() === "" || !Number.isFinite(rating) || rating < 0 || rating > 5) {
+        return res.status(400).json({error: "Rating must be a number between 0 and 5"});
+      }
+      where.rating = {gte: rating}
     }
     if (category) {
       where.category = category;
     }
     if (search) {
-      where.title = { contains: search };
+      where.OR = [{title: { contains: search }}, {description: {contains: search}}];
     }
-    let orderBy = undefined;
+    let orderBy;
     if (sorted_by === "up") {
       orderBy = { price: "asc" };
     }
     if (sorted_by === "down") {
       orderBy = { price: "desc" };
     }
-    const products = await prisma.product.findMany({where, orderBy});
+    
+    const [totalItems, products] = await Promise.all([
+      prisma.product.count({ where }),
+      prisma.product.findMany({
+        where, orderBy, skip, take: pageLimit
+      })  
+    ]);
     res.json({
         items: products,
         meta: {
-            total_items: products.length,
-            total_pages: 1,
-            current_page: 1,
-            limit: 12
+            total_items: totalItems,
+            total_pages: Math.ceil(totalItems/pageLimit),
+            current_page: currentPage,
+            limit: pageLimit
         },
     });
   } catch (error) {
