@@ -50,11 +50,19 @@ router.get("/products", async (req, res) => {
       where.OR = [{title: { contains: search }}, {description: {contains: search}}];
     }
     let orderBy;
-    if (sorted_by === "up") {
-      orderBy = { price: "asc" };
-    }
-    if (sorted_by === "down") {
-      orderBy = { price: "desc" };
+    switch (sorted_by) {
+      case "up":
+        orderBy = {price: "asc"};
+        break;
+      case "down":
+        orderBy = {price: "desc"};
+        break;
+      case "name-az":
+        orderBy = {title: "asc"};
+        break;
+      case "name-za":
+        orderBy = {title:"desc"};
+        break;
     }
     
     const [totalItems, products] = await Promise.all([

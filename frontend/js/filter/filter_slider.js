@@ -1,26 +1,30 @@
 const range = document.getElementById("sliderRange")
 const minValue = document.getElementById("minValue")
 const maxValue = document.getElementById("maxValue")
-const maxPrice = 400;
+const minSlider = document.getElementById("minPrice");
+const maxSlider = document.getElementById("maxPrice");
 
 function updateSlider(){
-    let min = parseInt(minSlider.value)
-    let max = parseInt(maxSlider.value)
-    if (min > max - 10){
-        max = max+10;
-    }
-    if (max < min + 10){
-        min = min-10;
+    let min = parseInt(minSlider.value);
+    let max = parseInt(maxSlider.value);
+    const minBound = Number(minSlider.min);
+    const maxBound = Number(maxSlider.max);
+
+    if (min >= max){
+        if (document.activeElement === minSlider) {
+            min = Math.max(minBound, max - 10);
+        } else {
+            max = Math.min(maxBound, min + 10);
+        }
     }
     minSlider.value = min;
     maxSlider.value = max;
     minValue.textContent = "$" + min;
     maxValue.textContent = "$" + max;
-    const percentMin = (min/(maxPrice+5)) * 100;
-    const percentMax = (max/(maxPrice+10)) * 100;
+    const percentMin = ((min - minBound) / (Number(minSlider.max) - minBound)) * 100;
+    const percentMax = ((max - minBound) / (Number(maxSlider.max) - minBound)) * 100;
     range.style.left = percentMin + "%";
-    range.style.width = (percentMax - percentMin+2.5) + "%";
-    filterProducts();
+    range.style.width = (percentMax - percentMin) + "%";
 }
 
 minSlider.addEventListener("input", updateSlider)
