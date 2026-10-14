@@ -1,14 +1,16 @@
 let currentPage = 1;
-const pageLimit = 12;
+const pageLimit = 3;
+let currentParams = {};
 
 async function loadProducts(params = {}) {
+    currentParams = {...params};
     const productsGrid = document.querySelector(".products-grid");
     const productsCount = document.querySelector(".products-count");
     const noProductsMessage = document.getElementById("noProductsMessage");
     const query = new URLSearchParams({
         page: String(currentPage),
         limit: String(pageLimit),
-        ...params
+        ...currentParams
     })
     productsGrid.innerHTML = "";
     try {
@@ -46,6 +48,7 @@ async function loadProducts(params = {}) {
         if (noProductsMessage) {
             noProductsMessage.style.display = data.items.length === 0 ? "block" : "none";
         }
+        renderPagination(data.meta);
         return data.meta;
     } catch (error) {
         console.error("Error loading products:", error);
@@ -77,6 +80,65 @@ function renderStars (rating){
         starsHtml += '<i class="fa-regular fa-star" style="color: #ccc;"></i>'
     }
     return starsHtml;
+}
+
+function renderPagination(meta) {
+    const pagination = document.getElementById("productsPagination");
+    pagination.replaceChildren();
+
+    const totalPages = Number(meta?.total_pages ?? 0);
+    currentPage = Number(meta?.current_page ?? currentPage);
+    if (totalPages <= 1) return;
+
+    function addPageButton(label, targetPage, { active = false, disabled = false, ariaLabel } = {}) {
+        const button = document.createElement("button");
+        button.type = "button";
+        button.className = `pagination-button${active ? " active" : ""}`;
+        button.disabled = disabled;
+        button.innerHTML = label;
+        if (active) button.setAttribute("aria-current", "page");
+        if (ariaLabel) button.setAttribute("aria-label", ariaLabel);
+        button.addEventListener("click", async () => {
+            currentPage = targetPage;
+            const meta = await loadProducts(currentParams);
+            if (meta) {
+                document.querySelector(".products-grid").scrollIntoView({
+                    behavior: "smooth",
+                    block: "start",
+                });
+            }
+        });
+        pagination.appendChild(button);
+    }
+
+    function addEllipsis() {
+        const ellipsis = document.createElement("span");
+        ellipsis.className = "pagination-ellipsis";
+        ellipsis.textContent = "…";
+        pagination.appendChild(ellipsis);
+    }
+
+    addPageButton('<i class="fa-solid fa-chevron-left" aria-hidden="true"></i>', currentPage - 1, {
+        disabled: currentPage === 1,
+        ariaLabel: "Previous page",
+    });
+
+    const visiblePages = new Set([1, totalPages]);
+    for (let page = Math.max(1, currentPage - 2); page <= Math.min(totalPages, currentPage + 2); page++) {
+        visiblePages.add(page);
+    }
+
+    let previousPage;
+    [...visiblePages].sort((a, b) => a - b).forEach(page => {
+        if (previousPage && page - previousPage > 1) addEllipsis();
+        addPageButton(String(page), page, { active: page === currentPage });
+        previousPage = page;
+    });
+
+    addPageButton('<i class="fa-solid fa-chevron-right" aria-hidden="true"></i>', currentPage + 1, {
+        disabled: currentPage === totalPages,
+        ariaLabel: "Next page",
+    });
 }
 
 loadProducts();
