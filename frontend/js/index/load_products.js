@@ -12,10 +12,10 @@ async function loadProducts(params = {}) {
         limit: String(pageLimit),
         ...currentParams
     })
-    productsGrid.innerHTML = "";
     try {
         const response = await fetch(`/api/products?${query}`);
         const data = await response.json();
+        productsGrid.innerHTML = "";
         data.items.forEach(product => {
             const card = document.createElement("div");
             card.className = "product-card";
