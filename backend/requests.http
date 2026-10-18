@@ -1,7 +1,3 @@
-POST http://localhost:8080/api/auth/login
-Content-Type: application/json
+GET http://localhost:8080/api/auth/me
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOjEsInJvbGUiOiJjdXN0b21lciIsImlhdCI6MTc5MjM0MDM1OCwiZXhwIjoxNzkyMzQzOTU4fQ.-dOh9vnn8ZoAJCejeMrZKlrF0TgNP_X4eZX5wqT1LnE
 
-{
-  "email": "test@example.com",
-  "password": "TestPassword123"
-}

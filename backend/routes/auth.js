@@ -4,6 +4,7 @@ import { PrismaClient } from "../generated/prisma/client.ts";
 import { PrismaMariaDb } from "@prisma/adapter-mariadb";
 import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
+import { authMiddleware } from "../middleware/auth.js";
 
 const router = express.Router();
 const databaseUrl = new URL(process.env.DATABASE_URL);
@@ -101,5 +102,27 @@ router.post("/login", async (req, res) => {
         return res.status(500).json({ error: "Internal Server Error" });
     }
 });
+
+router.get("/me", authMiddleware, async (req, res) => {
+    try {
+        const user = await prisma.user.findUnique ({
+            where: {
+                id: req.user.userId
+            },
+            select: {
+                id: true,
+                email: true,
+                role: true,
+                createdAt: true
+            }
+        });
+        if (!user) {
+            return res.status(401).json({ error: "User not found" });
+        }
+        return res.status(200).json({ user });
+    } catch (error) {
+        return res.status(500).json({ error: "Internal Server Error" });
+    }
+})
 
 export default router;
