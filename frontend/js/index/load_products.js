@@ -1,5 +1,5 @@
 let currentPage = 1;
-const pageLimit = 3;
+const pageLimit = 12;
 let currentParams = {};
 
 async function loadProducts(params = {}) {
@@ -30,7 +30,7 @@ async function loadProducts(params = {}) {
                     </a>
                 </div>
                 <div class="product-info">
-                    <a href="products?id=${product.id}"><h3>${product.title}</h3></a>
+                    <a href="product.html?id=${product.id}"><h3>${product.title}</h3></a>
                     <div class="rating">
                         ${renderStars(product.rating)}
                         <span>(${product.rating})</span>
@@ -141,4 +141,5 @@ function renderPagination(meta) {
     });
 }
 
-loadProducts();
+const defaultSort = document.querySelector(".sort select")?.value;
+loadProducts(defaultSort ? { sorted_by: defaultSort } : {});

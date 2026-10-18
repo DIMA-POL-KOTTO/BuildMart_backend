@@ -1,15 +1,17 @@
 import express from "express";
 import { PrismaClient } from "../generated/prisma/client.ts";
 import { PrismaMariaDb } from "@prisma/adapter-mariadb";
+import "dotenv/config";
 
 const router = express.Router();
+const databaseUrl = new URL(process.env.DATABASE_URL);
 
 const adapter = new PrismaMariaDb({
-  host: "localhost",
-  port: 3306,
-  user: "root",
-  password: "123456",
-  database: "buildmart",
+  host: databaseUrl.hostname,
+  port: Number(databaseUrl.port),
+  user: decodeURIComponent(databaseUrl.username),
+  password: decodeURIComponent(databaseUrl.password),
+  database: databaseUrl.pathname.slice(1),
   allowPublicKeyRetrieval: true,
 });
 

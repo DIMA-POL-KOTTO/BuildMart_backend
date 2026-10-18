@@ -94,7 +94,7 @@ nav a:hover {
     font-family: var(--default-font-family,ui-sans-serif,system-ui,sans-serif,"Apple Color Emoji","Segoe UI Emoji","Segoe UI Symbol","Noto Color Emoji");
     width: 100%;
     max-width: 400px;
-    color: #cccccc;
+    color: #000000;
 }
 
 .search-bar input:focus {
