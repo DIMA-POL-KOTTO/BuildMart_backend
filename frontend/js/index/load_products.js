@@ -23,6 +23,7 @@ async function loadProducts(params = {}) {
             card.dataset.name = product.title;
             card.dataset.price = product.price;
             card.dataset.rating = product.rating;
+            card.dataset.category = product.category;
             card.innerHTML = `
                 <div class="product-image">
                     <a href="product.html?id=${product.id}">
@@ -36,7 +37,7 @@ async function loadProducts(params = {}) {
                         <span>(${product.rating})</span>
                     </div>
                     <div class="price">$${product.price}</div>
-                    <div class="category">Заглушка</div>
+                    <div class="category">${product.category}</div>
                     <button class="add-to-cart"><i class="fa-solid fa-cart-shopping"></i> Add to Cart</button>
                 </div>
             `;

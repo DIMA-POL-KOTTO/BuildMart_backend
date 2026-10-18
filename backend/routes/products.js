@@ -2,6 +2,8 @@ import express from "express";
 import { PrismaClient } from "../generated/prisma/client.ts";
 import { PrismaMariaDb } from "@prisma/adapter-mariadb";
 import "dotenv/config";
+import { authMiddleware } from "../middleware/auth.js";
+import { roleMiddleware } from "../middleware/role.js";
 
 const router = express.Router();
 const databaseUrl = new URL(process.env.DATABASE_URL);
@@ -99,6 +101,28 @@ router.get("/products/:id", async (req, res) => {
   } catch (error) {
     console.error(error);
     res.status(500).json({ error: "Internal Server Error" });
+  }
+});
+
+router.post("/products", authMiddleware, roleMiddleware("admin"), async (req, res) => {
+  try {
+    const { title, description, price, images, stockQuantity, category } = req.body;
+    if (!title.trim() || !description.trim() || price === null || !Number.isFinite(Number(price)) || Number(price) < 0 || !Number.isInteger(Number(stockQuantity)) || Number(stockQuantity) < 0 || !Array.isArray(images)) {
+      return res.status(400).json({ error: "Invalid product data" });
+    }
+    const product = await prisma.product.create({
+      data: {
+        title: title.trim(),
+        description: description.trim(),
+        price: Number(price),
+        images: images,
+        stockQuantity: Number(stockQuantity),
+        category: category || null
+      }
+    });
+    return res.status(201).json(product);
+  } catch(error) {
+    return res.status(500).json({ error: "Internal Server Error" });
   }
 });
 
