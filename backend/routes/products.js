@@ -107,7 +107,7 @@ router.get("/products/:id", async (req, res) => {
 router.post("/products", authMiddleware, roleMiddleware("admin"), async (req, res) => {
   try {
     const { title, description, price, images, stockQuantity, category } = req.body;
-    if (!title.trim() || !description.trim() || price === null || !Number.isFinite(Number(price)) || Number(price) < 0 || !Number.isInteger(Number(stockQuantity)) || Number(stockQuantity) < 0 || !Array.isArray(images)) {
+    if (!title.trim() || !description.trim() || price === null || !Number.isFinite(Number(price)) || Number(price) < 0 || !Number.isInteger(Number(stockQuantity)) || Number(stockQuantity) < 0 || !Array.isArray(images) || !category.trim()) {
       return res.status(400).json({ error: "Invalid product data" });
     }
     const product = await prisma.product.create({
@@ -122,6 +122,48 @@ router.post("/products", authMiddleware, roleMiddleware("admin"), async (req, re
     });
     return res.status(201).json(product);
   } catch(error) {
+    return res.status(500).json({ error: "Internal Server Error" });
+  }
+});
+
+router.put("/products/:id", authMiddleware, roleMiddleware("admin"), async (req, res) => {
+  try {
+    const id = Number(req.params.id);
+    const { title, description, price, images, stockQuantity, category } = req.body;
+    const productOld = await prisma.product.findUnique({ 
+      where: { id }
+    });
+    if (!productOld) {
+      return res.status(404).json({ error: "Product not found" });
+    }
+    if (title!== undefined && !title.trim() || description!== undefined && !description.trim() || price !== undefined && (price === null || !Number.isFinite(Number(price)) || Number(price) < 0) || stockQuantity !== undefined && !Number.isInteger(Number(stockQuantity)) || Number(stockQuantity) < 0 || images !== undefined && !Array.isArray(images) || category !== undefined && !category.trim()) {
+      return res.status(400).json({ error: "Invalid product data" });
+    }
+    const data = {}
+    if (title !== undefined) data.title = title.trim();
+    if (description !== undefined) data.description = description.trim();
+    if (price !== undefined) data.price = Number(price);
+    if (images !== undefined) data.images = images;
+    if (stockQuantity !== undefined) data.stockQuantity = Number(stockQuantity);
+    if (category !== undefined) data.category = category.trim();
+    const productNew = await prisma.product.update({
+      where: { id },
+      data
+    });
+    return res.status(200).json(productNew);
+  } catch (error) {
+    return res.status(500).json({ error: "Internal Server Error" });
+  }
+});
+
+router.delete("/products/:id", authMiddleware, roleMiddleware("admin"), async (req, res) => {
+  try {
+    const id = Number(req.params.id);
+    await prisma.product.delete({
+      where: { id }
+    });
+    return res.status(200).json("Product deleting success!");
+  } catch (error) {
     return res.status(500).json({ error: "Internal Server Error" });
   }
 });

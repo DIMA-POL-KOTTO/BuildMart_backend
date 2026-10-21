@@ -1,3 +1,34 @@
-GET http://localhost:8080/api/auth/me
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOjEsInJvbGUiOiJjdXN0b21lciIsImlhdCI6MTc5MjM0MDM1OCwiZXhwIjoxNzkyMzQzOTU4fQ.-dOh9vnn8ZoAJCejeMrZKlrF0TgNP_X4eZX5wqT1LnE
+# POST http://localhost:8080/api/auth/login
+# Content-Type: application/json
 
+# {
+#     "email": "test@example.com",
+#     "password": "TestPassword123"
+# }
+
+# GET http://localhost:8080/api/auth/me
+# Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOjEsInJvbGUiOiJhZG1pbiIsImlhdCI6MTc5MjU4MTU1OCwiZXhwIjoxNzkyNTg1MTU4fQ.uXuHjRBHZkdyOGchUmttPEiDF6SWtR4C9q8ouERwM-Y
+
+# POST http://localhost:8080/api/products
+# Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOjEsInJvbGUiOiJhZG1pbiIsImlhdCI6MTc5MjU4MTU1OCwiZXhwIjoxNzkyNTg1MTU4fQ.uXuHjRBHZkdyOGchUmttPEiDF6SWtR4C9q8ouERwM-Y
+# Content-Type: application/json
+
+# {
+#   "title": "Test Product",
+#   "description": "Test description",
+#   "price": 19.99,
+#   "images": [],
+#   "stockQuantity": 10,
+#   "category": "Tools"
+# }
+
+# PUT http://localhost:8080/api/products/15
+# Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOjEsInJvbGUiOiJhZG1pbiIsImlhdCI6MTc5MjU4MzAyOCwiZXhwIjoxNzkyNTg2NjI4fQ.qPWoYnEYwQdNSTe2S1Tz4tXeqJccttN-2Wy-RuQpzqk
+# Content-Type: application/json
+
+# {
+#     "price": "500"
+# }
+
+DELETE http://localhost:8080/api/products/15
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOjEsInJvbGUiOiJhZG1pbiIsImlhdCI6MTc5MjU4MzAyOCwiZXhwIjoxNzkyNTg2NjI4fQ.qPWoYnEYwQdNSTe2S1Tz4tXeqJccttN-2Wy-RuQpzqk
