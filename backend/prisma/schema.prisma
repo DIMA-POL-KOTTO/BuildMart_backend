@@ -22,6 +22,7 @@ model Product {
   images          Json
   stockQuantity   Int         @map("stock_quantity")
   createdAt       DateTime    @default(now()) @map("created_at")
+  cartItems       CartItem[]
 }
 
 enum UserRole {
@@ -35,4 +36,25 @@ model User {
   passwordHash    String      @map("password_hash")
   role            UserRole    @default(customer)
   createdAt       DateTime    @default(now()) @map("created_at")
+  cart            Cart?
+}
+
+model Cart {
+  id              Int         @id @default(autoincrement())
+  userId          Int         @unique @map("user_id")
+  user            User        @relation(fields: [userId], references: [id], onDelete: Cascade)
+  items           CartItem[]
+  createdAt       DateTime    @default(now()) @map("created_at")
+  updatedAt       DateTime    @default(now()) @map("updated_at")
+}
+
+model CartItem {
+  id              Int         @id @default(autoincrement())
+  cartId          Int         @map("cart_id")
+  cart            Cart        @relation(fields: [cartId], references: [id], onDelete: Cascade)
+  productId       Int         @map("product_id")
+  product         Product     @relation(fields: [productId], references: [id], onDelete: Cascade)
+  quantity        Int         @default(1)
+
+  @@unique([cartId, productId])
 }
