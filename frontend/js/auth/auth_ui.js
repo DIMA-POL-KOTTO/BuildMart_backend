@@ -116,7 +116,7 @@ class AuthUI {
         this.authHeader.innerHTML = `
             <a href="auth.html" class="auth-btn">
                 <i class="fa-solid fa-sign-in-alt"></i>
-                <span>Войти</span>
+                <span>Sign In</span>
             </a>
         `;
         
@@ -137,7 +137,7 @@ class AuthUI {
         if (!this.authHeader || !this.user) return;
         
         // Отображаем email пользователя
-        const userEmail = this.user.email || 'Пользователь';
+        const userEmail = this.user.email || 'User';
         
         this.authHeader.innerHTML = `
             <div class="user-dropdown">
@@ -149,7 +149,7 @@ class AuthUI {
                 <div class="dropdown-content" role="menu">
                     <button class="dropdown-item logout-btn" role="menuitem">
                         <i class="fa-solid fa-sign-out-alt"></i>
-                        <span>Выйти</span>
+                        <span>Sign Out</span>
                     </button>
                 </div>
             </div>

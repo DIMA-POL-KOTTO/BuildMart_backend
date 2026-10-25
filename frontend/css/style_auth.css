@@ -38,8 +38,8 @@
 }
 
 .auth-tab.active {
-    background: #007bff;
-    border-color: #007bff;
+    background: #e75f10;
+    border-color: #e75f10;
     color: white;
 }
 
@@ -83,7 +83,7 @@
 
 .form-group input:focus {
     outline: none;
-    border-color: #007bff;
+    border-color: #e75f10;
 }
 
 .error-message {
@@ -100,7 +100,7 @@
 .submit-btn {
     width: 100%;
     padding: 0.875rem;
-    background: #007bff;
+    background: #e75f10;
     color: white;
     border: none;
     border-radius: 8px;
@@ -112,7 +112,7 @@
 }
 
 .submit-btn:hover {
-    background: #0056b3;
+    background: #be470c;
 }
 
 .submit-btn:disabled {
@@ -145,7 +145,7 @@
 
 .loading-spinner {
     border: 3px solid #f3f3f3;
-    border-top: 3px solid #007bff;
+    border-top: 3px solid #e75f10;
     border-radius: 50%;
     width: 24px;
     height: 24px;
@@ -185,7 +185,7 @@
     align-items: center;
     gap: 0.5rem;
     padding: 0.5rem 1rem;
-    background: #007bff;
+    background: #e75f10;
     color: white;
     border-radius: 8px;
     text-decoration: none;
@@ -194,7 +194,7 @@
 }
 
 .auth-btn:hover {
-    background: #0056b3;
+    background: #be470c;
 }
 
 .user-dropdown {
