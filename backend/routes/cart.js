@@ -105,4 +105,70 @@ router.post("/cart/items", authMiddleware, async (req, res) => {
     }
 });
 
+router.patch("/cart/items/:id", authMiddleware, async (req, res) => {
+    try {
+        const userId = req.user.userId;
+        const itemId = Number(req.params.id);
+        const { quantity } = req.body;
+        if (!Number.isInteger(quantity) || quantity < 0) {
+            return res.status(400).json({ error: "Invalid quantity" });
+        }
+        const item = await prisma.cartItem.findFirst({
+            where: {
+                id: itemId,
+                cart: {
+                    userId: userId
+                }
+            },
+            include: {
+                product: true
+            }
+        });
+
+        if (!item) {
+            return res.status(404).json({ error: "Cart product not found" });
+        }
+        if (quantity > item.product.stockQuantity) {
+            return res.status(400).json({ error: "Not enough stock" });
+        }
+        const itemNew = await prisma.cartItem.update({
+            where: { id: itemId },
+            data: { quantity }
+        });
+        return res.status(200).json({
+            message: "Cart item upsated",
+            item: itemNew
+        }) 
+    } catch(error) {
+        console.log(error);
+        return res.status(500).json({ error: "Internal Server Error" });
+    }
+});
+
+router.delete("/cart/items/:id", authMiddleware, async (req, res) => {
+    try {
+        const userId = req.user.userId;
+        const itemId = Number(req.params.id);
+        const item = await prisma.cartItem.findFirst({
+            where: {
+                id: itemId,
+                cart: {
+                    userId: userId
+                }
+            }
+        });
+        if (!item) {
+            return res.status(404).json({ error: "Cart item not found" });
+        }
+        await prisma.cartItem.delete({
+            where: { 
+                id: itemId
+            }
+        });
+        return res.status(200).json({ message: "Product removed from cart" });
+    } catch(error) {
+        return res.status(500).json({ error: "Internal Server Error" });
+    }
+});
+
 export default router;
