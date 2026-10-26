@@ -39,9 +39,13 @@ router.get("/cart", authMiddleware, async (req, res) =>{
         }
         const items = cart.items.map(item => ({
             id: item.id,
+            productId: item.productId,
             title: item.product.title,
             price: Number(item.product.price),
-            quantity: item.quantity
+            quantity: item.quantity,
+            category: item.product.category,
+            images: item.product.images,
+            stockQuantity: item.product.stockQuantity
         }));
         const total = items.reduce((sum, item) => sum + item.price * item.quantity, 0);
         res.json({ items, total });

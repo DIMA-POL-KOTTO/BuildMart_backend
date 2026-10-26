@@ -1,0 +1,6 @@
+.env
+.env.*
+!.env.example
+!.env.docker.example
+node_modules/
+backend/generated/prisma/
