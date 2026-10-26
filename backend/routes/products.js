@@ -21,7 +21,7 @@ const prisma = new PrismaClient({ adapter });
 
 router.get("/products", async (req, res) => {
   try {
-    const { min_price, max_price, min_rating, category, search, sorted_by, page="1", limit="12" } = req.query;
+    const { min_price, max_price, min_rating, category, search, sort_by, page="1", limit="12" } = req.query;
     const currentPage = Number(page);
     const pageLimit = Number(limit);
     if (!Number.isInteger(currentPage) || currentPage < 1 || !Number.isInteger(pageLimit) || pageLimit < 1 || pageLimit > 100) {
@@ -54,7 +54,7 @@ router.get("/products", async (req, res) => {
       where.OR = [{title: { contains: search }}, {description: {contains: search}}];
     }
     let orderBy;
-    switch (sorted_by) {
+    switch (sort_by) {
       case "up":
         orderBy = {price: "asc"};
         break;

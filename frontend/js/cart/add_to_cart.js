@@ -3,68 +3,76 @@ let toastQueue = [];
 const MAX_TOASTS = 3;
 
 buttons.forEach(button => {
-    button.addEventListener("click", () => {
+    button.addEventListener("click", async () => {
         let quantity = 1;
         const quanInput = document.getElementById("quan");
         if (quanInput) {
             quantity = +quanInput.value;
         }
         const card = button.closest(".product-card");
-        let product;
+        let productId;
+        let productName;
         if (!card) {
-            const productId = new URLSearchParams(window.location.search).get("id");
-            product = {
-                id: productId,
-                name: document.getElementById("productName").textContent,
-                category: document.getElementById("productCategory").textContent,
-                price: parseFloat(document.getElementById("productPrice").textContent.replace("$", '')),
-                img: document.getElementById("productImg").src,
-                count: quantity
-            }
+            productId = Number(new URLSearchParams(window.location.search).get("id"));
+            productName = document.getElementById("productName").textContent;
         }
         else {
-            product = {
-                id: card.dataset.id,
-                name: card.dataset.name,
-                category: card.dataset.category,
-                price: parseFloat(card.dataset.price),
-                img: card.dataset.img,
-                count: 1
-            };
+            productId = Number(card.dataset.id);
+            productName = card.dataset.name;
+        }
+        const token = sessionStorage.getItem("token");
+        if (!token) {
+            showToast("Please log in to add products");
+            return;
         }
         
-        let cart = JSON.parse(localStorage.getItem("cart")) || [];
-        const existing = cart.find(item => item.id === product.id);
-        if (existing) {
-            existing.count += quantity;
-        }
-        else {
-            cart.push(product);
-        }
-        localStorage.setItem("cart", JSON.stringify(cart));
-        updateCartCounter();
-        if (!card) {
-            showToast(`Added ${quantity} ${productName.textContent} to cart`);
-            showDeleteBtn();
-        }
-        else {
-            showToast(`Added ${card.dataset.name} to cart`);
+        try {
+            const response = await fetch("/api/cart/items", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                    "Authorization": `Bearer ${token}`
+                },
+                body: JSON.stringify({
+                    productId: productId,
+                    quantity: quantity
+                })
+            });
+            const data = await response.json();
+            if (!response.ok) {
+                throw new Error("Failed to add prduct");
+            }
+            await updateCartCounter();
+            showToast(`Added ${quantity} ${productName} to cart`);
+            if (!card) {
+                showDeleteBtn();
+            }
+
+        } catch (error){
+            console.error(error);
+            showToast("Failed to add product")
         }
     });
 });
 
-function updateCartCounter() {
+async function updateCartCounter() {
     const cartCount = document.querySelector(".count-products");
-    const cart = JSON.parse(localStorage.getItem("cart")) || [];
-    const totalCount = cart.reduce((sum, item) => sum + item.count, 0);
-    if (cartCount) {
-        if (totalCount > 0) {
-            cartCount.textContent = totalCount;
-            cartCount.style.display = "block";
+    const token = sessionStorage.getItem("token");
+    try {
+        const response = await fetch("/api/cart", {
+            headers: {
+                "Authorization": `Bearer ${token}`
+            }
+        });
+        if (!response.ok) {
+            throw new Error("Failed to load cart");
         }
-        else {
-            cartCount.style.display = "none";
-        }
+        const data = await response.json();
+        const totalCount = data.items.reduce((sum, item) => sum + item.quantity, 0);
+        cartCount.textContent = totalCount;
+        cartCount.style.display = totalCount > 0 ? "block" : "none";
+    } catch (error) {
+        console.log(error);
     }
 }
 

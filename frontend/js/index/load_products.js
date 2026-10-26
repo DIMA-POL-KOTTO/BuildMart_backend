@@ -143,4 +143,4 @@ function renderPagination(meta) {
 }
 
 const defaultSort = document.querySelector(".sort select")?.value;
-loadProducts(defaultSort ? { sorted_by: defaultSort } : {});
+loadProducts(defaultSort ? { sort_by: defaultSort } : {});

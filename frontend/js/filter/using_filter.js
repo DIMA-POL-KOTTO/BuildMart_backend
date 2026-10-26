@@ -21,11 +21,11 @@ document.addEventListener("DOMContentLoaded", () => {
         }
         const sort = sortSelect?.value;
         if (sort === "price-low") {
-            params.sorted_by = "up";
+            params.sort_by = "up";
         } else if (sort === "price-high") {
-            params.sorted_by = "down";
+            params.sort_by = "down";
         } else if (sort === "name-az" || sort === "name-za") {
-            params.sorted_by = sort;
+            params.sort_by = sort;
         }
         currentPage = 1;
         await loadProducts(params);
