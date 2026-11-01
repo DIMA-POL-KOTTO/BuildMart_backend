@@ -175,4 +175,56 @@ router.delete("/cart/items/:id", authMiddleware, async (req, res) => {
     }
 });
 
+router.post("/cart/apply-promo", authMiddleware, async (req, res) => {
+    try {
+        const userId = req.user.userId;
+        const { code } = req.body;
+        if (!code || typeof code !== "string") {
+            return res.status(400).json({
+                error: "Promo code is required"
+            });
+        }
+        const promo = await prisma.promocode.findUnique({
+            where: {
+                code: code.trim()
+            }
+        });
+        if (!promo || !promo.isActive) {
+            return res.status(400).json({ error: "Invalid promo code" });
+        }
+        const cart = await prisma.cart.findUnique({
+            where: {
+                userId: userId
+            },
+            include: {
+                items: {
+                    include: {
+                        product: true
+                    }
+                }
+            }
+        });
+        if (cart.items.length === 0) {
+            return res.status(400).json({ error: "Your cart is empty" });
+        }
+        const subtotal = cart.items.reduce((sum, item) => {
+            return sum + Number(item.product.price) * item.quantity;
+        }, 0);
+        const discount = subtotal * promo.discountPercent / 100;
+        const tax = subtotal * 0.08;
+        const total = subtotal + tax - discount;
+        return res.status(200).json ({
+            success: true,
+            promoCode: promo.code,
+            discountPercent: promo.discountPercent,
+            subtotal: Number(subtotal.toFixed(2)),
+            discount: Number(subtotal.toFixed(2)),
+            tax: Number(tax.toFixed(2)),
+            total: Number(total.toFixed(2))
+        });
+    } catch(error) {
+        return res.status(500).json({ error: "Internal Server Error" });
+    }
+});
+
 export default router;

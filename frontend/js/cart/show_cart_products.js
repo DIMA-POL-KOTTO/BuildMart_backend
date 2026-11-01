@@ -86,7 +86,7 @@ async function showCartProducts(){
 
 function updateSummary(subtotal) {
     const tax = subtotal * 0.08;
-    const discount = subtotal * discountCoef;
+    const discount = subtotal * (discountCoef * 0.01);
     const total = subtotal + tax - discount;
     document.getElementById("subtotal").textContent = "$" + subtotal.toFixed(2);
     document.getElementById("tax").textContent = "$" + tax.toFixed(2);
@@ -98,10 +98,61 @@ function updateSummary(subtotal) {
     }
 }
 
-window.applyPromo = function() {
-    discountCoef = 0.1;
-    const subtotal = parseFloat(document.getElementById("subtotal").textContent.replace(/[^0-9.]/g, ''));
-    updateSummary(subtotal);
-}
+const promoInput = document.getElementById("promoInput");
+const promoHint = document.querySelector(".promoHint");
+const promoBtn = document.getElementById("promoBtn");
+let isApplied = false;
+
+promoInput.addEventListener("input", () => {
+    if (isApplied){
+        return;
+    }
+    if (promoInput.value){
+        promoHint.style.display = "block";
+        promoHint.style.color = "#6b6a6a";
+        promoHint.textContent = "Enter promo code";
+    }
+    else {
+        promoHint.style.display = "none";
+    }
+});
+
+promoBtn.addEventListener("click", async () => {
+    const code = promoInput.value;
+    if (!code) return;
+    const token = sessionStorage.getItem("token");
+    promoBtn.disabled = true;
+    try {
+        const response = await fetch("/api/cart/apply-promo", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+                "Authorization": `Bearer ${token}`
+            },
+            body: JSON.stringify({
+                code: code
+            })
+        });
+        const data = await response.json();
+        if (!response.ok) {
+            throw new Error("Failed to apply promo code");
+        }
+        discountCoef = data.discountPercent;
+        isApplied = true;
+        updateSummary(data.subtotal);
+        promoHint.textContent = `✓ Promo code applied! You saved ${discountCoef}%`;
+        promoHint.style.color = "green";
+        promoHint.style.display = "block";
+        promoInput.disabled = true;
+    } catch (error) {
+        promoHint.style.color = "red";
+        promoHint.textContent = "X Promo code is incorrect!";
+        promoHint.style.display = "block";
+        console.log(error)
+    } finally {
+        promoBtn.disabled = false;
+    }
+})
+
 
 showCartProducts();
