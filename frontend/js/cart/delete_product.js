@@ -1,13 +1,19 @@
 const productInfo = document.querySelector(".product-info")
 
-function deleteProduct(id) {
-    let cart = JSON.parse(localStorage.getItem("cart")) || [];
-    cart = cart.filter(product => product.id !== id);
-    localStorage.setItem("cart", JSON.stringify(cart));
-    if (productInfo) {
-        updateCartCounter();
-        showDeleteBtn();
+async function deleteProduct(id) {
+    const token = sessionStorage.getItem("token");
+    try {
+        const response = await fetch(`api/cart/items/${id}`, {
+            method: "DELETE",
+            headers: {
+                "Authorization": `Bearer ${token}`
+            }
+        });
+        const data = await response.json();
+        await showCartProducts();
     }
-    showCartProducts();
+    catch(error) {
+        console.log(error);
+    }
 }
 
