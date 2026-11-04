@@ -7,34 +7,34 @@
 # }
 
 # GET http://localhost:8080/api/auth/me
-# Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOjEsInJvbGUiOiJhZG1pbiIsImlhdCI6MTc5MjU5MzY5NCwiZXhwIjoxNzkyNTk3Mjk0fQ.qw267yrgkpbOY0ZoTtYGgGksZNXilSVPjW0aoqkxIzQ
+# Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOjEsInJvbGUiOiJhZG1pbiIsImlhdCI6MTc5MzgwMTY5MywiZXhwIjoxNzkzODA1MjkzfQ.-RRyxDhattKV7Fry5azxk9VzJk3pdZaSynNnN0UAHMs
 
 # POST http://localhost:8080/api/products
-# Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOjEsInJvbGUiOiJhZG1pbiIsImlhdCI6MTc5MjU4MTU1OCwiZXhwIjoxNzkyNTg1MTU4fQ.uXuHjRBHZkdyOGchUmttPEiDF6SWtR4C9q8ouERwM-Y
+# Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOjEsInJvbGUiOiJhZG1pbiIsImlhdCI6MTc5MzgwMTY5MywiZXhwIjoxNzkzODA1MjkzfQ.-RRyxDhattKV7Fry5azxk9VzJk3pdZaSynNnN0UAHMs
 # Content-Type: application/json
 
 # {
-#   "title": "Test Product",
-#   "description": "Test description",
-#   "price": 19.99,
-#   "images": [],
-#   "stockQuantity": 10,
-#   "category": "Tools"
+#     "title": "Ceramic Floor Tiles",
+#     "category": "Tiles & Flooring",
+#     "price": 18.75,
+#     "description": "Durable ceramic floor tiles with a glossy finish. Resistant to scratches and moisture, perfect for kitchens, bathrooms, and entryways.",
+#     "images": ["/img/product_8_1.jfif", "/img/product_8_2.jfif", "/img/product_8_3.jfif"],
+#     "stockQuantity": 210
 # }
 
-# PUT http://localhost:8080/api/products/15
-# Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOjEsInJvbGUiOiJhZG1pbiIsImlhdCI6MTc5MjU4MzAyOCwiZXhwIjoxNzkyNTg2NjI4fQ.qPWoYnEYwQdNSTe2S1Tz4tXeqJccttN-2Wy-RuQpzqk
-# Content-Type: application/json
+PUT http://localhost:8080/api/products/29
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOjEsInJvbGUiOiJhZG1pbiIsImlhdCI6MTc5MzgxNTE2MSwiZXhwIjoxNzkzODE4NzYxfQ.Brr-DtWf6v0wvbH5ob8k4_27IXzlNKGNqw6U2eQSriA
+Content-Type: application/json
 
-# {
-#     "price": "500"
-# }
+{
+    "images": ["https://res.cloudinary.com/eitp9eq9/image/upload/v1793814166/product_20_1.jpg", "https://res.cloudinary.com/eitp9eq9/image/upload/v1793814166/product_20_2.jpg", "https://res.cloudinary.com/eitp9eq9/image/upload/v1793814165/product_20_3.jpg"]
+}
 
 # DELETE http://localhost:8080/api/products/15
 # Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOjEsInJvbGUiOiJhZG1pbiIsImlhdCI6MTc5MjU4MzAyOCwiZXhwIjoxNzkyNTg2NjI4fQ.qPWoYnEYwQdNSTe2S1Tz4tXeqJccttN-2Wy-RuQpzqk
 
-GET http://localhost:8080/api/cart
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOjEsInJvbGUiOiJhZG1pbiIsImlhdCI6MTc5Mjk0MDY1NSwiZXhwIjoxNzkyOTQ0MjU1fQ.wgLzl-4ozeCSu90cjm0y6KavZxZQcfU-p1tTBYRsavY
+# GET http://localhost:8080/api/cart
+# Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOjEsInJvbGUiOiJhZG1pbiIsImlhdCI6MTc5Mjk0MDY1NSwiZXhwIjoxNzkyOTQ0MjU1fQ.wgLzl-4ozeCSu90cjm0y6KavZxZQcfU-p1tTBYRsavY
 
 # POST http://localhost:8080/api/cart/items
 # Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOjEsInJvbGUiOiJhZG1pbiIsImlhdCI6MTc5Mjk0MDY1NSwiZXhwIjoxNzkyOTQ0MjU1fQ.wgLzl-4ozeCSu90cjm0y6KavZxZQcfU-p1tTBYRsavY
