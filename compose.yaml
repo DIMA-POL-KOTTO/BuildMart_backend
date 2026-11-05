@@ -10,7 +10,7 @@ services:
     volumes:
       - buildmart_db_data:/var/lib/mysql
     healthcheck:
-      test: ["CMD", "mysqladmin", "ping", "-h", "127.0.0.1", "-u", "root", "--password=$$MYSQL_ROOT_PASSWORD"]
+      test: ["CMD-SHELL", "mysqladmin ping -h 127.0.0.1 -u root --password=\"$$MYSQL_ROOT_PASSWORD\" --silent"]
       interval: 5s
       timeout: 5s
       retries: 20
@@ -30,3 +30,5 @@ services:
         condition: service_healthy
 volumes:
   buildmart_db_data:
+    external: true
+    name: 21663aa1e1488a1490c2c9829e497d96a5bf2d8948ed9f353ff41219224638f8
