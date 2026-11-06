@@ -22,7 +22,7 @@ function buildAdminModal() {
                     <input type="text" id="adminProductCategory" required>
                 </label>
                 <label class="admin-field">Description
-                    <textarea id="adminProductDescription" rows="4" required></textarea>
+                    <textarea id="adminProductDescription" rows="3" required></textarea>
                 </label>
                 <div class="admin-field-row">
                     <label class="admin-field">Price
@@ -33,7 +33,7 @@ function buildAdminModal() {
                     </label>
                 </div>
                 <label class="admin-field">Images (one URL per line)
-                    <textarea id="adminProductImages" rows="3" required></textarea>
+                    <textarea id="adminProductImages" rows="2" required></textarea>
                 </label>
                 <div class="admin-modal-error" id="adminModalError"></div>
                 <div class="admin-modal-actions">

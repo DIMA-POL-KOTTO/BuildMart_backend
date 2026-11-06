@@ -23,8 +23,8 @@ function setAdminState(isAdmin) {
 function showAddProductButton() {
     if (document.getElementById('addProductBtn')) return;
 
-    const filters = document.querySelector('.products-controls .filters');
-    if (!filters) return;
+    const controls = document.querySelector('.products-controls');
+    if (!controls) return;
 
     const button = document.createElement('button');
     button.className = 'admin-add-btn';
@@ -33,7 +33,7 @@ function showAddProductButton() {
     button.addEventListener('click', () => {
         document.dispatchEvent(new CustomEvent('admin:add-product'));
     });
-    filters.appendChild(button);
+    controls.insertBefore(button, controls.querySelector('.sort'));
 }
 
 function hideAddProductButton() {
@@ -42,4 +42,17 @@ function hideAddProductButton() {
 
 document.addEventListener('auth:changed', (e) => {
     setAdminState(e.detail?.user?.role === 'admin');
+});
+
+document.addEventListener('click', (e) => {
+    const menuBtn = e.target.closest('.product-menu-btn');
+
+    document.querySelectorAll('.product-menu-dropdown.show').forEach(dropdown => {
+        const isOwn = menuBtn && dropdown.parentElement.contains(menuBtn);
+        if (!isOwn) dropdown.classList.remove('show');
+    });
+
+    if (menuBtn) {
+        menuBtn.parentElement.querySelector('.product-menu-dropdown')?.classList.toggle('show');
+    }
 });
