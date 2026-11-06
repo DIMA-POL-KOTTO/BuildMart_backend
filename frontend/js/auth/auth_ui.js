@@ -53,7 +53,8 @@ class AuthUI {
      */
     async init() {
         this.token = this.getToken();
-        
+        this.user = null;
+
         if (this.token) {
             const userLoaded = await this.loadUser();
             if (userLoaded) {
