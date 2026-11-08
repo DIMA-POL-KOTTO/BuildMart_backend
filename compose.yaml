@@ -37,3 +37,5 @@ services:
     command: ["-m", "64"]
 volumes:
   buildmart_db_data:
+    external: true
+    name: 21663aa1e1488a1490c2c9829e497d96a5bf2d8948ed9f353ff41219224638f8
