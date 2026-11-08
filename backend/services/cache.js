@@ -1,4 +1,6 @@
-import memjs from "memjs"
+import "dotenv/config";
+import memjs from "memjs";
+import { randomUUID } from "node:crypto";
 
 const client = memjs.Client.create(process.env.MEMCACHED_SERVERS);
 
@@ -9,7 +11,7 @@ export function getCache(key) {
                 console.warn("Memcached error (GET): ", error);
                 return resolve(null);
             }
-            if (value === null) {
+            if (value == null) {
                 return resolve(null);
             }
             try {
@@ -44,4 +46,20 @@ export function deleteCache(key) {
             resolve(true);
         })
     })
+}
+
+export async function getCatalogVersion() {
+    const key = "products:version";
+    let version = await getCache(key);
+    if (version !== null) {
+        return version;
+    }
+    version = randomUUID();
+    await setCache(key, version, 0);
+    return version;
+}
+
+export async function invalidateCatalogCache() {
+    const newVersion = randomUUID();
+    return setCache("products:version", newVersion, 0);
 }

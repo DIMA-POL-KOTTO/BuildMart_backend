@@ -4,6 +4,8 @@ import { PrismaMariaDb } from "@prisma/adapter-mariadb";
 import "dotenv/config";
 import { authMiddleware } from "../middleware/auth.js";
 import { roleMiddleware } from "../middleware/role.js";
+import { createHash } from "node:crypto";
+import { getCache, getCatalogVersion, setCache, invalidateCatalogCache } from "../services/cache.js";
 
 const router = express.Router();
 const databaseUrl = new URL(process.env.DATABASE_URL);
@@ -18,6 +20,17 @@ const adapter = new PrismaMariaDb({
 });
 
 const prisma = new PrismaClient({ adapter });
+
+async function refreshCatalogCacheVersion() {
+  try {
+    const success = await invalidateCatalogCache();
+    if (!success) {
+      console.warn("Could not invalidate products cache");
+    }
+  } catch (error) {
+    console.warn("Products cache invalidation error:", error);
+  }
+}
 
 router.get("/products", async (req, res) => {
   try {
@@ -69,21 +82,33 @@ router.get("/products", async (req, res) => {
         break;
     }
     
+    const normQuery = JSON.stringify(Object.fromEntries(Object.entries(req.query).sort(([a], [b]) => a.localeCompare(b))));
+    const queryHash = createHash("sha256").update(normQuery).digest("hex");
+    const catalogVersion = await getCatalogVersion();
+    const cacheKey = `products:${catalogVersion}:${queryHash}`;
+    const cachedData = await getCache(cacheKey);
+    if (cachedData !== null) {
+      res.setHeader("X-Cache", "HIT");
+      return res.json(cachedData);
+    }
+    res.setHeader("X-Cache", "MISS");
     const [totalItems, products] = await Promise.all([
       prisma.product.count({ where }),
       prisma.product.findMany({
         where, orderBy, skip, take: pageLimit
       })  
     ]);
-    res.json({
-        items: products,
-        meta: {
-            total_items: totalItems,
-            total_pages: Math.ceil(totalItems/pageLimit),
-            current_page: currentPage,
-            limit: pageLimit
-        },
-    });
+    const responseData = {
+      items: products,
+      meta: {
+          total_items: totalItems,
+          total_pages: Math.ceil(totalItems/pageLimit),
+          current_page: currentPage,
+          limit: pageLimit
+      },
+    };
+    await setCache(cacheKey, responseData, 90);
+    return res.json(responseData);
   } catch (error) {
     console.error(error);
     res.status(500).json({ error: "Internal Server Error" });
@@ -120,6 +145,7 @@ router.post("/products", authMiddleware, roleMiddleware("admin"), async (req, re
         category: category || null
       }
     });
+    await refreshCatalogCacheVersion();
     return res.status(201).json(product);
   } catch(error) {
     return res.status(500).json({ error: "Internal Server Error" });
@@ -150,6 +176,7 @@ router.put("/products/:id", authMiddleware, roleMiddleware("admin"), async (req,
       where: { id },
       data
     });
+    await refreshCatalogCacheVersion();
     return res.status(200).json(productNew);
   } catch (error) {
     return res.status(500).json({ error: "Internal Server Error" });
@@ -162,6 +189,7 @@ router.delete("/products/:id", authMiddleware, roleMiddleware("admin"), async (r
     await prisma.product.delete({
       where: { id }
     });
+    await refreshCatalogCacheVersion();
     return res.status(200).json("Product deleting success!");
   } catch (error) {
     return res.status(500).json({ error: "Internal Server Error" });

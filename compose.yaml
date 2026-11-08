@@ -23,11 +23,18 @@ services:
       PORT: 8080
       DATABASE_URL: ${DATABASE_URL:?Set DATABASE_URL in .env.docker}
       JWT_SECRET: ${JWT_SECRET:?Set JWT_SECRET in .env.docker}
+      MEMCACHED_SERVERS: ${MEMCACHED_SERVERS:?Set MEMCACHED_SERVERS in .env.docker}
     ports:
       - "8080:8080"
     depends_on:
       db:
         condition: service_healthy
+      memcached:
+        condition: service_started
+  memcached:
+    image: memcached:1.6-alpine
+    restart: unless-stopped
+    command: ["-m", "64"]
 volumes:
   buildmart_db_data:
     external: true
