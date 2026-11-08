@@ -13,6 +13,7 @@ async function loadProducts(params = {}) {
         ...currentParams
     })
     try {
+        productsGrid.innerHTML = '<p class="products-loading">Loading products...</p>';
         const response = await fetch(`/api/products?${query}`);
         const data = await response.json();
         productsGrid.innerHTML = "";
@@ -24,7 +25,22 @@ async function loadProducts(params = {}) {
             card.dataset.price = product.price;
             card.dataset.rating = product.rating;
             card.dataset.category = product.category;
+            const adminMenu = window.adminState?.isAdmin ? `
+                <div class="product-menu">
+                    <button class="product-menu-btn" aria-label="Product menu">
+                        <i class="fa-solid fa-ellipsis-vertical"></i>
+                    </button>
+                    <div class="product-menu-dropdown">
+                        <button class="product-menu-item" data-action="edit">
+                            <i class="fa-solid fa-pen"></i> Edit
+                        </button>
+                        <button class="product-menu-item" data-action="delete">
+                            <i class="fa-solid fa-trash"></i> Delete
+                        </button>
+                    </div>
+                </div>` : "";
             card.innerHTML = `
+                ${adminMenu}
                 <div class="product-image">
                     <a href="product.html?id=${product.id}">
                         <img src="${product.images[0]}" alt="${product.title}">

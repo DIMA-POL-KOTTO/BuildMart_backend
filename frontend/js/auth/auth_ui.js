@@ -53,7 +53,8 @@ class AuthUI {
      */
     async init() {
         this.token = this.getToken();
-        
+        this.user = null;
+
         if (this.token) {
             const userLoaded = await this.loadUser();
             if (userLoaded) {
@@ -66,8 +67,10 @@ class AuthUI {
         } else {
             this.renderGuest();
         }
+
+        this.dispatchAuthChanged();
     }
-    
+
     /**
      * Получение токена из sessionStorage
      */
@@ -223,7 +226,9 @@ class AuthUI {
         // Обновляем интерфейс
         this.renderGuest();
         this.closeDropdown();
-        
+
+        this.dispatchAuthChanged();
+
         console.log('User logged out successfully');
     }
     
@@ -233,6 +238,15 @@ class AuthUI {
     clearToken() {
         sessionStorage.removeItem('token');
         this.token = null;
+    }
+
+    dispatchAuthChanged() {
+        document.dispatchEvent(new CustomEvent('auth:changed', {
+            detail: {
+                user: this.user,
+                token: this.token
+            }
+        }));
     }
 }
 

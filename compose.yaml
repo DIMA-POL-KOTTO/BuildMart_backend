@@ -25,7 +25,7 @@ services:
       JWT_SECRET: ${JWT_SECRET:?Set JWT_SECRET in .env.docker}
       MEMCACHED_SERVERS: ${MEMCACHED_SERVERS:?Set MEMCACHED_SERVERS in .env.docker}
     ports:
-      - "8080:8080"
+      - "8081:8080"
     depends_on:
       db:
         condition: service_healthy
@@ -37,5 +37,3 @@ services:
     command: ["-m", "64"]
 volumes:
   buildmart_db_data:
-    external: true
-    name: 21663aa1e1488a1490c2c9829e497d96a5bf2d8948ed9f353ff41219224638f8
