@@ -24,6 +24,8 @@ services:
       DATABASE_URL: ${DATABASE_URL:?Set DATABASE_URL in .env.docker}
       JWT_SECRET: ${JWT_SECRET:?Set JWT_SECRET in .env.docker}
       MEMCACHED_SERVERS: ${MEMCACHED_SERVERS:?Set MEMCACHED_SERVERS in .env.docker}
+      ADMIN_EMAIL: ${ADMIN_EMAIL:-admin@example.com}
+      ADMIN_PASSWORD: ${ADMIN_PASSWORD:-ADMIN123}
     ports:
       - "8081:8080"
     depends_on:
@@ -31,11 +33,10 @@ services:
         condition: service_healthy
       memcached:
         condition: service_started
+    command: ["sh", "-c", "npx prisma migrate deploy --config ./prisma7.config.ts && node scripts/create-admin.js && npm start"]
   memcached:
     image: memcached:1.6-alpine
     restart: unless-stopped
     command: ["-m", "64"]
 volumes:
   buildmart_db_data:
-    external: true
-    name: 21663aa1e1488a1490c2c9829e497d96a5bf2d8948ed9f353ff41219224638f8
