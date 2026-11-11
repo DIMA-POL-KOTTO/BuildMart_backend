@@ -123,11 +123,21 @@ router.get("/products", async (req, res) => {
 router.get("/products/:id", async (req, res) => {
   try {
     const id = Number(req.params.id);
+    const catalogVersion = await getCatalogVersion();
+    const cacheKey = `product:${catalogVersion}:${id}`;
+    const cachedProduct = await getCache(cacheKey);
+    if (cachedProduct !== null) {
+      res.setHeader("X-Cache", "HIT");
+      return res.json(cachedProduct);
+    }
+    res.setHeader("X-Cache", "MISS");
+
     const product = await prisma.product.findUnique({ where: { id } });
     if (!product) {
       return res.status(404).json({ error: "Product not found" });
     }
-    res.json(product);
+    await setCache(cacheKey, product, 90);
+    return res.json(product);
   } catch (error) {
     console.error(error);
     res.status(500).json({ error: "Internal Server Error" });

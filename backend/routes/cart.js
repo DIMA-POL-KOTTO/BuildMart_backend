@@ -4,6 +4,7 @@ import { PrismaClient } from "../generated/prisma/client.ts";
 import { PrismaMariaDb } from "@prisma/adapter-mariadb";
 import { authMiddleware } from "../middleware/auth.js";
 import { readFileSync } from "node:fs";
+import { deleteCache, getCache, getCatalogVersion, setCache } from "../services/cache.js";
 
 const router = express.Router();
 const databaseUrl = new URL(process.env.DATABASE_URL);
@@ -23,9 +24,34 @@ const adapter = new PrismaMariaDb({
 
 const prisma = new PrismaClient({ adapter });
 
+async function getUserCartCacheKey(userId) {
+    const catalogVersion = await getCatalogVersion();
+    return `cart:${catalogVersion}:${userId}`;
+}
+
+async function invalidateUserCartCache(userId) {
+    try {
+        const cacheKey = await getUserCartCacheKey(userId);
+        const success = await deleteCache(cacheKey);
+        if (!success) {
+            console.warn("Could not invalidate cart cache");
+        }
+    } catch (error) {
+        console.warn("Cart cache invalidation error:", error?.message || error);
+    }
+}
+
 router.get("/cart", authMiddleware, async (req, res) =>{
     try {
         const userId = req.user.userId;
+        const cacheKey = await getUserCartCacheKey(userId);
+        const cachedCart = await getCache(cacheKey);
+        if (cachedCart !== null) {
+            res.setHeader("X-Cache", "HIT");
+            return res.json(cachedCart);
+        }
+        res.setHeader("X-Cache", "MISS");
+
         const cart = await prisma.cart.findUnique({
             where: { userId },
             include: {
@@ -37,10 +63,12 @@ router.get("/cart", authMiddleware, async (req, res) =>{
             }
         });
         if (!cart) {
-            return res.status(200).json({
+            const emptyCart = {
                 items: [],
                 total: 0
-            })
+            };
+            await setCache(cacheKey, emptyCart, 90);
+            return res.status(200).json(emptyCart);
         }
         const items = cart.items.map(item => ({
             id: item.id,
@@ -53,7 +81,9 @@ router.get("/cart", authMiddleware, async (req, res) =>{
             stockQuantity: item.product.stockQuantity
         }));
         const total = items.reduce((sum, item) => sum + item.price * item.quantity, 0);
-        res.json({ items, total });
+        const responseData = { items, total };
+        await setCache(cacheKey, responseData, 90);
+        return res.json(responseData);
 
     } catch(error) {
         return res.status(500).json({ error: "Internal Server Error" });
@@ -105,6 +135,7 @@ router.post("/cart/items", authMiddleware, async (req, res) => {
                 }
             });
         }
+        await invalidateUserCartCache(userId);
         return res.status(200).json({
             message: "Product added to cart",
             item: item
@@ -144,6 +175,7 @@ router.patch("/cart/items/:id", authMiddleware, async (req, res) => {
             where: { id: itemId },
             data: { quantity }
         });
+        await invalidateUserCartCache(userId);
         return res.status(200).json({
             message: "Cart item upsated",
             item: itemNew
@@ -174,6 +206,7 @@ router.delete("/cart/items/:id", authMiddleware, async (req, res) => {
                 id: itemId
             }
         });
+        await invalidateUserCartCache(userId);
         return res.status(200).json({ message: "Product removed from cart" });
     } catch(error) {
         return res.status(500).json({ error: "Internal Server Error" });
