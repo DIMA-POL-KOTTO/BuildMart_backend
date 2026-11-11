@@ -6,6 +6,7 @@ import { authMiddleware } from "../middleware/auth.js";
 import { roleMiddleware } from "../middleware/role.js";
 import { createHash } from "node:crypto";
 import { getCache, getCatalogVersion, setCache, invalidateCatalogCache } from "../services/cache.js";
+import { readFileSync } from "node:fs";
 
 const router = express.Router();
 const databaseUrl = new URL(process.env.DATABASE_URL);
@@ -17,6 +18,10 @@ const adapter = new PrismaMariaDb({
   password: decodeURIComponent(databaseUrl.password),
   database: databaseUrl.pathname.slice(1),
   allowPublicKeyRetrieval: true,
+  connectTimeout: 5000,
+  ssl: {
+    ca: readFileSync(new URL("../certs/isrgrootx1.pem", import.meta.url), "utf8")
+  }
 });
 
 const prisma = new PrismaClient({ adapter });

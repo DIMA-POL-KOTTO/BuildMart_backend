@@ -1,19 +1,4 @@
 services:
-  db:
-    image: mysql:8.0
-    restart: unless-stopped
-    environment:
-      MYSQL_ROOT_PASSWORD: ${DB_ROOT_PASSWORD:?Set DB_ROOT_PASSWORD in .env.docker}
-      MYSQL_DATABASE: buildmart
-      MYSQL_USER: buildmart_app
-      MYSQL_PASSWORD: ${DB_PASSWORD:?Set DB_PASSWORD in .env.docker}
-    volumes:
-      - buildmart_db_data:/var/lib/mysql
-    healthcheck:
-      test: ["CMD-SHELL", "mysqladmin ping -h 127.0.0.1 -u root --password=\"$$MYSQL_ROOT_PASSWORD\" --silent"]
-      interval: 5s
-      timeout: 5s
-      retries: 20
   app:
     build:
       context: .
@@ -29,8 +14,6 @@ services:
     ports:
       - "8081:8080"
     depends_on:
-      db:
-        condition: service_healthy
       memcached:
         condition: service_started
     command: ["sh", "-c", "npx prisma migrate deploy --config ./prisma7.config.ts && node scripts/create-admin.js && npm start"]
@@ -38,5 +21,3 @@ services:
     image: memcached:1.6-alpine
     restart: unless-stopped
     command: ["-m", "64"]
-volumes:
-  buildmart_db_data:

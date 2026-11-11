@@ -2,6 +2,7 @@ import "dotenv/config";
 import bcrypt from "bcrypt";
 import { PrismaClient } from "../generated/prisma/client.ts";
 import { PrismaMariaDb } from "@prisma/adapter-mariadb";
+import { readFileSync } from "node:fs";
 
 const email = (process.env.ADMIN_EMAIL || "admin@example.com").trim().toLowerCase();
 const password = process.env.ADMIN_PASSWORD || "ADMIN123";
@@ -26,6 +27,10 @@ const adapter = new PrismaMariaDb({
   password: decodeURIComponent(databaseUrl.password),
   database: databaseUrl.pathname.slice(1),
   allowPublicKeyRetrieval: true,
+  connectTimeout: 5000,
+  ssl: {
+    ca: readFileSync(new URL("../certs/isrgrootx1.pem", import.meta.url), "utf8")
+  }
 });
 
 const prisma = new PrismaClient({ adapter });
