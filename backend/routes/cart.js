@@ -256,7 +256,7 @@ router.post("/cart/apply-promo", authMiddleware, async (req, res) => {
             promoCode: promo.code,
             discountPercent: promo.discountPercent,
             subtotal: Number(subtotal.toFixed(2)),
-            discount: Number(subtotal.toFixed(2)),
+            discount: Number(discount.toFixed(2)),
             tax: Number(tax.toFixed(2)),
             total: Number(total.toFixed(2))
         });

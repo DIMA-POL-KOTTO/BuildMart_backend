@@ -16,7 +16,7 @@ services:
     depends_on:
       memcached:
         condition: service_started
-    command: ["sh", "-c", "npx prisma migrate deploy --config ./prisma7.config.ts && node scripts/create-admin.js && npm start"]
+    command: ["sh", "-c", "npx prisma migrate deploy --config ./prisma7.config.ts && node scripts/create-admin.js && node scripts/create-promo.js && npm start"]
   memcached:
     image: memcached:1.6-alpine
     restart: unless-stopped
