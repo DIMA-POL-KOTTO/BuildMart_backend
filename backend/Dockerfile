@@ -1,15 +1,22 @@
+FROM node:24-bookworm-slim AS build
+RUN apt-get update \
+    && apt-get install -y --no-install-recommends openssl ca-certificates \
+    && rm -rf /var/lib/apt/lists/*
+WORKDIR /app/backend
+COPY backend/package*.json ./
+RUN npm ci
+COPY backend/ ./
+COPY frontend/ ../frontend/
+RUN npx prisma generate --config ./prisma7.config.ts
+RUN npm prune --omit=dev
+
 FROM node:24-bookworm-slim
 RUN apt-get update \
     && apt-get install -y --no-install-recommends openssl ca-certificates \
     && rm -rf /var/lib/apt/lists/*
-WORKDIR /app
-COPY backend/package*.json ./backend/
 WORKDIR /app/backend
-RUN npm ci
-WORKDIR /app
-COPY backend/ ./backend/
-COPY frontend/ ./frontend/
-WORKDIR /app/backend
-RUN npx prisma generate --config ./prisma7.config.ts
+COPY --from=build --chown=node:node /app/backend ./
+COPY --from=build --chown=node:node /app/frontend ../frontend
+USER node
 EXPOSE 8080
 CMD ["sh", "-c", "npx prisma migrate deploy --config ./prisma7.config.ts && npm start"]

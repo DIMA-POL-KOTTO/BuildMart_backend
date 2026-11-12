@@ -4,6 +4,7 @@ import { PrismaMariaDb } from "@prisma/adapter-mariadb";
 import { readFileSync } from "node:fs";
 
 const databaseUrl = new URL(process.env.DATABASE_URL);
+const isLocalDatabase = ["db", "localhost", "127.0.0.1"].includes(databaseUrl.hostname);
 const adapter = new PrismaMariaDb({
   host: databaseUrl.hostname,
   port: Number(databaseUrl.port),
@@ -12,9 +13,11 @@ const adapter = new PrismaMariaDb({
   database: databaseUrl.pathname.slice(1),
   allowPublicKeyRetrieval: true,
   connectTimeout: 5000,
-  ssl: {
-    ca: readFileSync(new URL("../certs/isrgrootx1.pem", import.meta.url), "utf8"),
-  },
+  ...(isLocalDatabase ? {} : {
+    ssl: {
+      ca: readFileSync(new URL("../certs/isrgrootx1.pem", import.meta.url), "utf8"),
+    },
+  }),
 });
 
 const prisma = new PrismaClient({ adapter });
