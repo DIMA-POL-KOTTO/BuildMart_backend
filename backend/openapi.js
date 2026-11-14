@@ -24,6 +24,250 @@ const openapi = {
                 bearerFormat: "JWT"
             }
         },
+        schemas: {
+            ErrorResponse: {
+                type: "object",
+                properties: {
+                    error: { type: "string", example: "Invalid product data" }
+                },
+                required: ["error"]
+            },
+            Product: {
+                type: "object",
+                properties: {
+                    id: { type: "integer", example: 12 },
+                    title: { type: "string", example: "Кирпич строительный" },
+                    category: { type: "string", example: "Кирпич" },
+                    description: { type: "string", example: "Керамический строительный кирпич" },
+                    price: {
+                        description: "Цена. Prisma может вернуть Decimal в JSON как строку.",
+                        oneOf: [
+                            { type: "number", format: "float", example: 25.5 },
+                            { type: "string", example: "25.50" }
+                        ]
+                    },
+                    rating: { type: "number", format: "float", example: 4.5 },
+                    images: {
+                        type: "array",
+                        minItems: 3,
+                        items: { type: "string", example: "https://example.com/product_12_1.jpg" }
+                    },
+                    stockQuantity: { type: "integer", example: 100 },
+                    createdAt: { type: "string", format: "date-time", example: "2026-11-14T12:00:00.000Z" }
+                },
+                required: ["id", "title", "category", "description", "price", "rating", "images", "stockQuantity", "createdAt"]
+            },
+            ProductCreate: {
+                type: "object",
+                properties: {
+                    title: { type: "string", minLength: 1, example: "Кирпич строительный" },
+                    description: { type: "string", minLength: 1, example: "Керамический строительный кирпич" },
+                    price: { type: "number", minimum: 0, example: 25.5 },
+                    images: {
+                        type: "array",
+                        minItems: 3,
+                        items: { type: "string", example: "https://example.com/product_12_1.jpg" }
+                    },
+                    stockQuantity: { type: "integer", minimum: 0, example: 100 },
+                    category: { type: "string", minLength: 1, example: "Кирпич" }
+                },
+                required: ["title", "description", "price", "images", "stockQuantity", "category"],
+                additionalProperties: false
+            },
+            ProductUpdate: {
+                type: "object",
+                description: "Можно передать только изменяемые поля. Если images передано, в массиве должно быть не меньше трёх элементов.",
+                properties: {
+                    title: { type: "string", minLength: 1, example: "Кирпич строительный" },
+                    description: { type: "string", minLength: 1, example: "Обновлённое описание товара" },
+                    price: { type: "number", minimum: 0, example: 27.5 },
+                    images: {
+                        type: "array",
+                        minItems: 3,
+                        items: { type: "string", example: "https://example.com/product_12_1.jpg" }
+                    },
+                    stockQuantity: { type: "integer", minimum: 0, example: 80 },
+                    category: { type: "string", minLength: 1, example: "Кирпич" }
+                },
+                additionalProperties: false
+            },
+            ProductListResponse: {
+                type: "object",
+                properties: {
+                    items: { type: "array", items: { $ref: "#/components/schemas/Product" } },
+                    meta: { $ref: "#/components/schemas/Pagination" }
+                },
+                required: ["items", "meta"]
+            },
+            Pagination: {
+                type: "object",
+                properties: {
+                    total_items: { type: "integer", example: 42 },
+                    total_pages: { type: "integer", example: 4 },
+                    current_page: { type: "integer", example: 1 },
+                    limit: { type: "integer", example: 12 }
+                },
+                required: ["total_items", "total_pages", "current_page", "limit"]
+            },
+            User: {
+                type: "object",
+                properties: {
+                    id: { type: "integer", example: 5 },
+                    email: { type: "string", format: "email", example: "customer@example.com" },
+                    role: { type: "string", enum: ["customer", "admin"], example: "customer" },
+                    createdAt: { type: "string", format: "date-time", example: "2026-11-14T12:00:00.000Z" }
+                },
+                required: ["id", "email", "role", "createdAt"]
+            },
+            Credentials: {
+                type: "object",
+                properties: {
+                    email: { type: "string", format: "email", example: "customer@example.com" },
+                    password: { type: "string", format: "password", minLength: 8, example: "Password123" }
+                },
+                required: ["email", "password"],
+                additionalProperties: false
+            },
+            RegisterResponse: {
+                type: "object",
+                properties: {
+                    message: { type: "string", example: "Success regiter" },
+                    user: { $ref: "#/components/schemas/User" }
+                },
+                required: ["message", "user"]
+            },
+            LoginResponse: {
+                type: "object",
+                properties: {
+                    message: { type: "string", example: "Success login" },
+                    token: { type: "string", description: "JWT, действительный в течение одного часа" },
+                    user: { $ref: "#/components/schemas/User" }
+                },
+                required: ["message", "token", "user"]
+            },
+            CurrentUserResponse: {
+                type: "object",
+                properties: { user: { $ref: "#/components/schemas/User" } },
+                required: ["user"]
+            },
+            CartResponse: {
+                type: "object",
+                properties: {
+                    items: {
+                        type: "array",
+                        items: { $ref: "#/components/schemas/CartProduct" }
+                    },
+                    total: { type: "number", format: "float", example: 51.0 }
+                },
+                required: ["items", "total"]
+            },
+            CartProduct: {
+                type: "object",
+                properties: {
+                    id: { type: "integer", description: "ID позиции в корзине", example: 2 },
+                    productId: { type: "integer", example: 12 },
+                    title: { type: "string", example: "Кирпич строительный" },
+                    price: { type: "number", format: "float", example: 25.5 },
+                    quantity: { type: "integer", example: 2 },
+                    category: { type: "string", example: "Кирпич" },
+                    images: { type: "array", items: { type: "string" } },
+                    stockQuantity: { type: "integer", example: 100 }
+                },
+                required: ["id", "productId", "title", "price", "quantity", "category", "images", "stockQuantity"]
+            },
+            CartItem: {
+                type: "object",
+                properties: {
+                    id: { type: "integer", example: 2 },
+                    cartId: { type: "integer", example: 1 },
+                    productId: { type: "integer", example: 12 },
+                    quantity: { type: "integer", example: 2 }
+                },
+                required: ["id", "cartId", "productId", "quantity"]
+            },
+            CartItemRequest: {
+                type: "object",
+                properties: {
+                    productId: { type: "integer", minimum: 1, example: 12 },
+                    quantity: { type: "integer", minimum: 1, example: 2 }
+                },
+                required: ["productId", "quantity"],
+                additionalProperties: false
+            },
+            QuantityRequest: {
+                type: "object",
+                properties: { quantity: { type: "integer", minimum: 0, example: 3 } },
+                required: ["quantity"],
+                additionalProperties: false
+            },
+            MessageResponse: {
+                type: "object",
+                properties: { message: { type: "string", example: "Product removed from cart" } },
+                required: ["message"]
+            },
+            CartMutationResponse: {
+                type: "object",
+                properties: {
+                    message: { type: "string", example: "Product added to cart" },
+                    item: { $ref: "#/components/schemas/CartItem" }
+                },
+                required: ["message", "item"]
+            },
+            PromoRequest: {
+                type: "object",
+                properties: { code: { type: "string", minLength: 1, example: "SAVE10" } },
+                required: ["code"],
+                additionalProperties: false
+            },
+            PromoCalculation: {
+                type: "object",
+                properties: {
+                    success: { type: "boolean", example: true },
+                    promoCode: { type: "string", example: "SAVE10" },
+                    discountPercent: { type: "integer", example: 10 },
+                    subtotal: { type: "number", format: "float", example: 100 },
+                    discount: { type: "number", format: "float", example: 10 },
+                    tax: { type: "number", format: "float", example: 8 },
+                    total: { type: "number", format: "float", example: 98 }
+                },
+                required: ["success", "promoCode", "discountPercent", "subtotal", "discount", "tax", "total"]
+            }
+        },
+        responses: {
+            BadRequest: {
+                description: "Некорректные данные запроса",
+                content: { "application/json": { schema: { $ref: "#/components/schemas/ErrorResponse" } } }
+            },
+            Unauthorized: {
+                description: "Требуется действительный JWT-токен",
+                content: { "application/json": { schema: { $ref: "#/components/schemas/ErrorResponse" } } }
+            },
+            Forbidden: {
+                description: "Недостаточно прав: операция доступна только администратору",
+                content: { "application/json": { schema: { $ref: "#/components/schemas/ErrorResponse" } } }
+            },
+            NotFound: {
+                description: "Запрашиваемый объект не найден",
+                content: { "application/json": { schema: { $ref: "#/components/schemas/ErrorResponse" } } }
+            },
+            Conflict: {
+                description: "Пользователь с таким email уже зарегистрирован",
+                content: { "application/json": { schema: { $ref: "#/components/schemas/ErrorResponse" } } }
+            },
+            InternalServerError: {
+                description: "Внутренняя ошибка сервера",
+                content: { "application/json": { schema: { $ref: "#/components/schemas/ErrorResponse" } } }
+            },
+            CacheStatus: {
+                description: "Состояние кэша для GET-запроса",
+                headers: {
+                    "X-Cache": {
+                        description: "HIT — ответ взят из кэша; MISS — ответ получен из базы данных",
+                        schema: { type: "string", enum: ["HIT", "MISS"] }
+                    }
+                }
+            }
+        }
     },
     paths: {
         "/api/products": {
@@ -46,7 +290,7 @@ const openapi = {
                 responses: {
                     "200": {
                         description: "Страница каталога",
-                        headers: { "X-Cache": { $ref: "#/components/headers/CacheStatus" } },
+                        headers: { "X-Cache": { $ref: "#/components/responses/CacheStatus/headers/X-Cache" } },
                         content: { "application/json": { schema: { $ref: "#/components/schemas/ProductListResponse" } } }
                     },
                     "400": { $ref: "#/components/responses/BadRequest" },
@@ -80,7 +324,7 @@ const openapi = {
                 responses: {
                     "200": {
                         description: "Товар",
-                        headers: { "X-Cache": { $ref: "#/components/headers/CacheStatus" } },
+                        headers: { "X-Cache": { $ref: "#/components/responses/CacheStatus/headers/X-Cache" } },
                         content: { "application/json": { schema: { $ref: "#/components/schemas/Product" } } }
                     },
                     "404": { $ref: "#/components/responses/NotFound" },
@@ -127,7 +371,7 @@ const openapi = {
                 operationId: "register",
                 requestBody: {
                     required: true,
-                    content: { "application/json": { schema: { $ref: "#/components/schemas/RegistrationCredentials" } } }
+                    content: { "application/json": { schema: { $ref: "#/components/schemas/Credentials" } } }
                 },
                 responses: {
                     "201": { description: "Пользователь создан", content: { "application/json": { schema: { $ref: "#/components/schemas/RegisterResponse" } } } },
@@ -144,7 +388,7 @@ const openapi = {
                 operationId: "login",
                 requestBody: {
                     required: true,
-                    content: { "application/json": { schema: { $ref: "#/components/schemas/LoginCredentials" } } }
+                    content: { "application/json": { schema: { $ref: "#/components/schemas/Credentials" } } }
                 },
                 responses: {
                     "200": { description: "Вход выполнен", content: { "application/json": { schema: { $ref: "#/components/schemas/LoginResponse" } } } },
@@ -176,7 +420,7 @@ const openapi = {
                 responses: {
                     "200": {
                         description: "Содержимое корзины",
-                        headers: { "X-Cache": { $ref: "#/components/headers/CacheStatus" } },
+                        headers: { "X-Cache": { $ref: "#/components/responses/CacheStatus/headers/X-Cache" } },
                         content: { "application/json": { schema: { $ref: "#/components/schemas/CartResponse" } } }
                     },
                     "401": { $ref: "#/components/responses/Unauthorized" },
@@ -195,7 +439,7 @@ const openapi = {
                     content: { "application/json": { schema: { $ref: "#/components/schemas/CartItemRequest" } } }
                 },
                 responses: {
-                    "200": { description: "Товар добавлен", content: { "application/json": { schema: { $ref: "#/components/schemas/AddCartItemResponse" } } } },
+                    "200": { description: "Товар добавлен", content: { "application/json": { schema: { $ref: "#/components/schemas/CartMutationResponse" } } } },
                     "400": { $ref: "#/components/responses/BadRequest" },
                     "401": { $ref: "#/components/responses/Unauthorized" },
                     "404": { $ref: "#/components/responses/NotFound" },
@@ -215,7 +459,7 @@ const openapi = {
                     content: { "application/json": { schema: { $ref: "#/components/schemas/QuantityRequest" } } }
                 },
                 responses: {
-                    "200": { description: "Количество изменено", content: { "application/json": { schema: { $ref: "#/components/schemas/UpdateCartItemResponse" } } } },
+                    "200": { description: "Количество изменено", content: { "application/json": { schema: { $ref: "#/components/schemas/CartMutationResponse" } } } },
                     "400": { $ref: "#/components/responses/BadRequest" },
                     "401": { $ref: "#/components/responses/Unauthorized" },
                     "404": { $ref: "#/components/responses/NotFound" },
