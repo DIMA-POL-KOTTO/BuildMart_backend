@@ -32,8 +32,8 @@ function buildAdminModal() {
                         <input type="number" id="adminProductStock" min="0" step="1" required>
                     </label>
                 </div>
-                <label class="admin-field">Images (one URL per line)
-                    <textarea id="adminProductImages" rows="2" required></textarea>
+                <label class="admin-field">Images (at least 3 URLs, one per line)
+                    <textarea id="adminProductImages" rows="3" required></textarea>
                 </label>
                 <div class="admin-modal-error" id="adminModalError"></div>
                 <div class="admin-modal-actions">
@@ -102,7 +102,7 @@ async function submitAdminProduct(e) {
     if (!title || !category || !description) return setAdminModalError('Title, category and description are required');
     if (priceRaw === '' || !Number.isFinite(price) || price < 0) return setAdminModalError('Price must be a non-negative number');
     if (stockRaw === '' || !Number.isInteger(stockQuantity) || stockQuantity < 0) return setAdminModalError('Stock quantity must be a non-negative integer');
-    if (images.length === 0) return setAdminModalError('At least one image URL is required');
+    if (images.length < 3) return setAdminModalError('At least 3 image URLs are required');
 
     const body = { title, category, description, price, stockQuantity, images };
     const url = adminModalEditingId ? `/api/products/${adminModalEditingId}` : '/api/products';

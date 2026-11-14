@@ -13,11 +13,7 @@ async function loadProduct() {
         }
         const product = await response.json();
         const deleteBtnSecondary = document.getElementById("deleteBtnSecondary");
-        document.getElementById("productImg").src = product.images[0];
-        document.getElementById("productImg1").src = product.images[0];
-        document.getElementById("productImg2").src = product.images[1];
-        document.getElementById("productImg3").src = product.images[2];
-        photoCarousel();
+        photoCarousel(product.images);
         document.getElementById("productName").textContent = product.title;
         document.getElementById("productName1").textContent = product.title;
         document.getElementById("productPrice").textContent = "$" + product.price;

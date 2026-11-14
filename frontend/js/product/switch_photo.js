@@ -1,29 +1,39 @@
-let current = 0;
-function photoCarousel() {
-    const mainImage = document.getElementById("productImg")
-    const otherImages = document.querySelectorAll(".im")
-    const srcList = Array.from(otherImages).map(img => img.src)
+function photoCarousel(images) {
+    const mainImage = document.getElementById("productImg");
+    const thumbnailContainer = document.querySelector(".other-images");
+    const previousButton = document.querySelector(".nav.prev");
+    const nextButton = document.querySelector(".nav.next");
+    const imageList = Array.isArray(images) ? images : [];
+    let current = 0;
 
-    function updateImage(index) {
-        current = index;
-        mainImage.src = srcList[index];
-        otherImages.forEach(img => img.classList.remove("active"));
-        otherImages[index].classList.add("active");
+    thumbnailContainer.replaceChildren();
+    previousButton.hidden = imageList.length < 2;
+    nextButton.hidden = imageList.length < 2;
+
+    if (imageList.length === 0) {
+        mainImage.removeAttribute("src");
+        return;
     }
 
-    otherImages.forEach((img, index) => {
-        img.addEventListener("click", () => {
-            updateImage(index);
-        });
+    const thumbnails = imageList.map((src, index) => {
+        const thumbnail = document.createElement("img");
+        thumbnail.className = "im";
+        thumbnail.src = src;
+        thumbnail.alt = `Product image ${index + 1}`;
+        thumbnail.addEventListener("click", () => updateImage(index));
+        thumbnailContainer.appendChild(thumbnail);
+        return thumbnail;
     });
 
-    document.querySelector(".next").addEventListener("click", () => {
-        updateImage((current + 1) % otherImages.length);
-    })
+    function updateImage(index) {
+        current = (index + imageList.length) % imageList.length;
+        mainImage.src = imageList[current];
+        thumbnails.forEach(img => img.classList.remove("active"));
+        thumbnails[current].classList.add("active");
+        thumbnails[current].scrollIntoView({ behavior: "smooth", block: "nearest", inline: "nearest" });
+    }
 
-    document.querySelector(".prev").addEventListener("click", () => {
-        updateImage((current - 1 + otherImages.length) % otherImages.length);
-    })
+    nextButton.addEventListener("click", () => updateImage(current + 1));
+    previousButton.addEventListener("click", () => updateImage(current - 1));
     updateImage(0);
 }
-

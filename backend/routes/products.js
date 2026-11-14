@@ -148,7 +148,10 @@ router.get("/products/:id", async (req, res) => {
 router.post("/products", authMiddleware, roleMiddleware("admin"), async (req, res) => {
   try {
     const { title, description, price, images, stockQuantity, category } = req.body;
-    if (!title.trim() || !description.trim() || price === null || !Number.isFinite(Number(price)) || Number(price) < 0 || !Number.isInteger(Number(stockQuantity)) || Number(stockQuantity) < 0 || !Array.isArray(images) || !category.trim()) {
+    if (!Array.isArray(images) || images.length < 3) {
+      return res.status(400).json({ error: "At least 3 images are required" });
+    }
+    if (!title.trim() || !description.trim() || price === null || !Number.isFinite(Number(price)) || Number(price) < 0 || !Number.isInteger(Number(stockQuantity)) || Number(stockQuantity) < 0 || !category.trim()) {
       return res.status(400).json({ error: "Invalid product data" });
     }
     const product = await prisma.product.create({
@@ -178,7 +181,11 @@ router.put("/products/:id", authMiddleware, roleMiddleware("admin"), async (req,
     if (!productOld) {
       return res.status(404).json({ error: "Product not found" });
     }
-    if (title!== undefined && !title.trim() || description!== undefined && !description.trim() || price !== undefined && (price === null || !Number.isFinite(Number(price)) || Number(price) < 0) || stockQuantity !== undefined && !Number.isInteger(Number(stockQuantity)) || Number(stockQuantity) < 0 || images !== undefined && !Array.isArray(images) || category !== undefined && !category.trim()) {
+    const updatedImages = images === undefined ? productOld.images : images;
+    if (!Array.isArray(updatedImages) || updatedImages.length < 3) {
+      return res.status(400).json({ error: "At least 3 images are required" });
+    }
+    if (title!== undefined && !title.trim() || description!== undefined && !description.trim() || price !== undefined && (price === null || !Number.isFinite(Number(price)) || Number(price) < 0) || stockQuantity !== undefined && !Number.isInteger(Number(stockQuantity)) || Number(stockQuantity) < 0 || category !== undefined && !category.trim()) {
       return res.status(400).json({ error: "Invalid product data" });
     }
     const data = {}

@@ -71,6 +71,7 @@ main {
     border-radius: 9px;
     border: 2px solid #cccccc;
     transition: 0.2s;
+    cursor: pointer;
 }
 
 .im.active {
