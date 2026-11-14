@@ -19,4 +19,4 @@ COPY --from=build --chown=node:node /app/backend ./
 COPY --from=build --chown=node:node /app/frontend ../frontend
 USER node
 EXPOSE 8080
-CMD ["sh", "-c", "npx prisma migrate deploy --config ./prisma7.config.ts && npm start"]
+CMD ["sh", "-c", "npx prisma migrate deploy --config ./prisma7.config.ts && node scripts/create-admin.js && node scripts/create-promo.js && npm start"]
