@@ -82,6 +82,20 @@ async function loadProducts(params = {}) {
     
 }
 
+function getSortParams(sort) {
+    switch (sort) {
+        case "price-low":
+            return { sort_by: "price", order: "asc" };
+        case "price-high":
+            return { sort_by: "price", order: "desc" };
+        case "name-za":
+            return { sort_by: "title", order: "desc" };
+        case "name-az":
+        default:
+            return { sort_by: "title", order: "asc" };
+    }
+}
+
 function renderStars (rating){
     let starsHtml = '';
     const fullStars = Math.floor(rating);
@@ -159,4 +173,4 @@ function renderPagination(meta) {
 }
 
 const defaultSort = document.querySelector(".sort select")?.value;
-loadProducts(defaultSort ? { sort_by: defaultSort } : {});
+loadProducts(getSortParams(defaultSort));

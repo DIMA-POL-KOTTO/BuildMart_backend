@@ -20,13 +20,7 @@ document.addEventListener("DOMContentLoaded", () => {
             params.search = search;
         }
         const sort = sortSelect?.value;
-        if (sort === "price-low") {
-            params.sort_by = "up";
-        } else if (sort === "price-high") {
-            params.sort_by = "down";
-        } else if (sort === "name-az" || sort === "name-za") {
-            params.sort_by = sort;
-        }
+        Object.assign(params, getSortParams(sort));
         currentPage = 1;
         await loadProducts(params);
     }

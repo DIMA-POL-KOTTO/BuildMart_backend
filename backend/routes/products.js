@@ -42,7 +42,7 @@ async function refreshCatalogCacheVersion() {
 
 router.get("/products", async (req, res) => {
   try {
-    const { min_price, max_price, min_rating, category, search, sort_by, page="1", limit="12" } = req.query;
+    const { min_price, max_price, min_rating, category, search, sort_by, order, page="1", limit="12" } = req.query;
     const currentPage = Number(page);
     const pageLimit = Number(limit);
     if (!Number.isInteger(currentPage) || currentPage < 1 || !Number.isInteger(pageLimit) || pageLimit < 1 || pageLimit > 100) {
@@ -75,19 +75,17 @@ router.get("/products", async (req, res) => {
       where.OR = [{title: { contains: search }}, {description: {contains: search}}];
     }
     let orderBy;
-    switch (sort_by) {
-      case "up":
-        orderBy = {price: "asc"};
-        break;
-      case "down":
-        orderBy = {price: "desc"};
-        break;
-      case "name-az":
-        orderBy = {title: "asc"};
-        break;
-      case "name-za":
-        orderBy = {title:"desc"};
-        break;
+    if (sort_by !== undefined) {
+      if (!["price", "title"].includes(sort_by)) {
+        return res.status(400).json({ error: "sort_by must be price or title" });
+      }
+      const sortOrder = order ?? "asc";
+      if (!["asc", "desc"].includes(sortOrder)) {
+        return res.status(400).json({ error: "order must be asc or desc" });
+      }
+      orderBy = { [sort_by]: sortOrder };
+    } else if (order !== undefined) {
+      return res.status(400).json({ error: "sort_by is required when order is set" });
     }
     
     const normQuery = JSON.stringify(Object.fromEntries(Object.entries(req.query).sort(([a], [b]) => a.localeCompare(b))));
