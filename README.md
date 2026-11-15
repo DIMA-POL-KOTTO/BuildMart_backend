@@ -24,71 +24,51 @@
 
 Express раздаёт файлы из `frontend/` и API с одного адреса. Поэтому браузерный интерфейс и API в текущем развёртывании работают с одного origin.
 
-## Запуск локально через Docker Compose
+## Локальный запуск через Docker Compose
 
-Это рекомендуемый способ запустить проект локально. Понадобятся Docker Desktop и Docker Compose.
+Для запуска понадобятся Docker Desktop и Docker Compose. В корне проекта создай `.env` из шаблона:
 
-1. Создай файл настроек из шаблона в корне проекта:
+```powershell
+Copy-Item .env.example .env
+```
 
-   ```powershell
-   Copy-Item .env.docker.example .env.docker
-   ```
+Для локальной базы оставь в `DATABASE_URL` адрес из шаблона с хостом `db`. `MEMCACHED_SERVERS` должен быть `memcached:11211`. Задай собственные значения для паролей и `JWT_SECRET`.
 
-2. Открой `.env.docker` и задай значения для паролей и секрета. В `DATABASE_URL` используй имя сервиса `db`, а для Memcached — `memcached:11211`.
+Из корня проекта собери образ и запусти сервисы:
 
-3. Из корня проекта собери образ и запусти сервисы:
-
-   ```powershell
-   docker compose --env-file .env.docker up --build -d
-   ```
+```powershell
+docker compose up --build -d
+```
 
 После запуска:
 
-- сайт: <http://localhost:8081>
-- Swagger UI: <http://localhost:8081/api/docs>
+- сайт: `http://localhost:<PORT из .env>`; с шаблонным `PORT=8080` — <http://localhost:8080>
+- Swagger UI: `http://localhost:<PORT из .env>/api/docs`; с шаблонным портом — <http://localhost:8080/api/docs>
 - API-маршруты используют префикс `/api`.
+
+`PORT` задаёт внешний порт на компьютере. Например, при `PORT=8023` сайт будет доступен на <http://localhost:8023>. Внутри контейнера приложение всегда слушает порт `8080`.
 
 Посмотреть журнал приложения:
 
 ```powershell
-docker compose --env-file .env.docker logs -f app
+docker compose logs -f app
 ```
 
 Остановить сервисы, сохранив данные базы:
 
 ```powershell
-docker compose --env-file .env.docker down
+docker compose down
 ```
 
-База хранится в Docker-томе `buildmart_db_data`, поэтому обычная остановка контейнеров данные не удаляет. Чтобы удалить том и все данные локальной базы, выполни `docker compose --env-file .env.docker down --volumes`.
+База хранится в Docker-томе `buildmart_db_data`, поэтому обычная остановка контейнеров данные не удаляет. Чтобы удалить том и все данные локальной базы, выполни `docker compose down --volumes`.
 
 При старте приложения автоматически применяются Prisma-миграции, создаются начальный администратор и промокод `SAVE10`, если их ещё нет.
 
-## Запуск backend без Docker
+## Запуск с удалённой базой данных
 
-Для этого варианта нужны Node.js 24, запущенный локальный MySQL и Memcached. Создай базу данных `buildmart` и настрой пользователя MySQL с доступом к ней.
+Чтобы приложение в Docker подключалось к TiDB, замени только `DATABASE_URL` в корневом `.env` на строку подключения из TiDB. Укажи адрес удалённого сервера вместо локального имени `db`. Миграции, начальный администратор и промокод будут созданы в базе, указанной в `DATABASE_URL`.
 
-В PowerShell из корня проекта создай локальный файл настроек:
-
-```powershell
-Copy-Item backend/.env.example backend/.env
-```
-
-Проверь, что в `backend/.env` заданы адрес локальной базы (`localhost:3306`), `PORT=8080`, секрет `JWT_SECRET` и `MEMCACHED_SERVERS=localhost:11211`.
-
-Затем установи зависимости и запусти приложение из папки `backend`:
-
-```powershell
-Set-Location backend
-npm ci
-npx prisma generate --config ./prisma7.config.ts
-npx prisma migrate deploy --config ./prisma7.config.ts
-node scripts/create-admin.js
-node scripts/create-promo.js
-npm start
-```
-
-Сайт будет доступен на <http://localhost:8080>, Swagger UI — на <http://localhost:8080/api/docs>. В этом варианте Memcached должен быть запущен отдельно на `localhost:11211`.
+Текущий `compose.yaml` также запускает локальный MySQL-контейнер и ждёт, пока он станет доступен. При удалённом `DATABASE_URL` приложение к этому локальному контейнеру не подключается, но переменные `DB_ROOT_PASSWORD` и `DB_PASSWORD` всё равно нужны Compose для его запуска.
 
 ## Переменные окружения
 
@@ -96,29 +76,28 @@ npm start
 
 | Переменная | Назначение |
 | --- | --- |
-| `DATABASE_URL` | Строка подключения к MySQL/TiDB. Для Compose хост — `db`; для запуска backend на компьютере — `localhost`. |
+| `DATABASE_URL` | Строка подключения к БД. Для локального MySQL в Compose хост — `db`; для TiDB укажи адрес, выданный облачной базой. |
 | `JWT_SECRET` | Секрет для подписи JWT-токенов. Задай собственное случайное значение. |
-| `MEMCACHED_SERVERS` | Адрес Memcached. Compose: `memcached:11211`; запуск Node.js напрямую: `localhost:11211`; Render: `127.0.0.1:11211`. |
-| `PORT` | Порт Express-сервера. Локально обычно `8080`; в Docker Compose внутренний порт — `8080`. |
+| `MEMCACHED_SERVERS` | Адрес Memcached. Compose: `memcached:11211`; Render: `127.0.0.1:11211`. |
+| `PORT` | Внешний порт localhost для Docker Compose. Например, `8023` означает адрес `http://localhost:8023`; внутри контейнера сервер слушает `8080`. На Render порт задаёт платформа. |
 | `DB_ROOT_PASSWORD` | Пароль root-пользователя MySQL в Docker Compose. |
-| `DB_PASSWORD` | Пароль пользователя приложения MySQL в Docker Compose. Он должен совпадать с паролем в `DATABASE_URL`. |
+| `DB_PASSWORD` | Пароль пользователя приложения локального MySQL-контейнера. Для локальной БД он должен совпадать с паролем в `DATABASE_URL`; при подключении к TiDB используется только локальным контейнером. |
 | `ADMIN_EMAIL` | Email начального администратора. Если не задан, используется `admin@example.com`. |
 | `ADMIN_PASSWORD` | Пароль начального администратора. Если не задан, используется `ADMIN123`; для развёрнутого сервиса обязательно задай собственный пароль. |
+| `CLOUDINARY_URL` | Адрес Cloudinary из шаблона. Текущий backend пока эту переменную не использует. |
 
-Для Docker Compose используй корневой `.env.docker`, созданный из `.env.docker.example`. Для запуска backend напрямую используется `backend/.env`, созданный из `backend/.env.example`. Это разные файлы и значения: например, адрес `db` работает внутри Compose-сети, а `localhost` — при запуске backend на компьютере.
-
-`CLOUDINARY_URL` пока присутствует в `backend/.env.example`, но текущий backend его не использует для своих операций.
+Используется один корневой `.env`, созданный из `.env.example`. Не добавляй его в Git: в нём находятся локальные пароли и секреты.
 
 ## Развёртывание на Render
 
-В Render задаются переменные окружения для развёрнутого сервиса, а не загружается локальный `.env`:
+В Render значения задаются в настройках сервиса; локальный `.env` в Render не загружается:
 
-- `DATABASE_URL` — строка подключения к облачной MySQL-совместимой базе TiDB;
+- `DATABASE_URL` — строка подключения к TiDB;
 - `JWT_SECRET` — собственный секрет;
 - `MEMCACHED_SERVERS=127.0.0.1:11211` — Memcached запускается в том же контейнере, что и приложение;
 - `ADMIN_EMAIL` и `ADMIN_PASSWORD` — учётные данные начального администратора.
 
-Поле **Docker Command** в Render оставь пустым, чтобы использовалась команда запуска из Dockerfile: она запускает Memcached, применяет миграции и начальные данные, затем стартует сервер. Страница сайта открывается по адресу Render-сервиса, Swagger UI — по адресу `<адрес-сервиса>/api/docs`.
+Render автоматически задаёт переменную `PORT` для Web Service (по умолчанию `10000`); сервер читает это значение. Подробнее — в [документации Render о Web Services](https://render.com/docs/web-services). Поле **Docker Command** оставь пустым, чтобы использовалась команда из Dockerfile: она запускает Memcached, применяет миграции и начальные данные, затем стартует сервер. Сайт открывается по адресу Render-сервиса, Swagger UI — по адресу `<адрес-сервиса>/api/docs`.
 
 ## API
 
