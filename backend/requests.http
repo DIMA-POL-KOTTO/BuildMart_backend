@@ -1,10 +1,10 @@
-# POST http://localhost:8080/api/auth/login
-# Content-Type: application/json
+POST http://localhost:8080/api/auth/login
+Content-Type: application/json
 
-# {
-#     "email": "test@example.com",
-#     "password": "TestPassword123"
-# }
+{
+    "email": "test@example.com",
+    "password": "TestPassword123"
+}
 
 # GET http://localhost:8080/api/auth/me
 # Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOjEsInJvbGUiOiJhZG1pbiIsImlhdCI6MTc5MzgwMTY5MywiZXhwIjoxNzkzODA1MjkzfQ.-RRyxDhattKV7Fry5azxk9VzJk3pdZaSynNnN0UAHMs
@@ -22,13 +22,13 @@
 #     "stockQuantity": 210
 # }
 
-PUT http://localhost:8080/api/products/29
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOjEsInJvbGUiOiJhZG1pbiIsImlhdCI6MTc5MzgxNTE2MSwiZXhwIjoxNzkzODE4NzYxfQ.Brr-DtWf6v0wvbH5ob8k4_27IXzlNKGNqw6U2eQSriA
-Content-Type: application/json
+# PUT http://localhost:8080/api/products/29
+# Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOjEsInJvbGUiOiJhZG1pbiIsImlhdCI6MTc5MzgxNTE2MSwiZXhwIjoxNzkzODE4NzYxfQ.Brr-DtWf6v0wvbH5ob8k4_27IXzlNKGNqw6U2eQSriA
+# Content-Type: application/json
 
-{
-    "images": ["https://res.cloudinary.com/eitp9eq9/image/upload/v1793814166/product_20_1.jpg", "https://res.cloudinary.com/eitp9eq9/image/upload/v1793814166/product_20_2.jpg", "https://res.cloudinary.com/eitp9eq9/image/upload/v1793814165/product_20_3.jpg"]
-}
+# {
+#     "images": ["https://res.cloudinary.com/eitp9eq9/image/upload/v1793814166/product_20_1.jpg", "https://res.cloudinary.com/eitp9eq9/image/upload/v1793814166/product_20_2.jpg", "https://res.cloudinary.com/eitp9eq9/image/upload/v1793814165/product_20_3.jpg"]
+# }
 
 # DELETE http://localhost:8080/api/products/15
 # Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOjEsInJvbGUiOiJhZG1pbiIsImlhdCI6MTc5MjU4MzAyOCwiZXhwIjoxNzkyNTg2NjI4fQ.qPWoYnEYwQdNSTe2S1Tz4tXeqJccttN-2Wy-RuQpzqk
