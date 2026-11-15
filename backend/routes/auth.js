@@ -1,5 +1,5 @@
 import express from "express";
-import dotenv from "dotenv/config";
+import "dotenv/config";
 import { PrismaClient } from "../generated/prisma/client.ts";
 import { PrismaMariaDb } from "@prisma/adapter-mariadb";
 import bcrypt from "bcrypt";
@@ -8,7 +8,6 @@ import { authMiddleware } from "../middleware/auth.js";
 import { readFileSync } from "node:fs";
 
 const router = express.Router();
-dotenv.config({path: path.resolve(import.meta.dirname, "../../.env")});
 const databaseUrl = new URL(process.env.DATABASE_URL);
 const isLocalDatabase = ["db", "localhost", "127.0.0.1"].includes(databaseUrl.hostname);
 
