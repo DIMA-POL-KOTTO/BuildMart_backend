@@ -1,8 +1,3 @@
-/**
- * AuthUI - управление состоянием аутентификации в шапке сайта
- * Второй пункт ТЗ: отображение состояния пользователя в шапке сайта
- */
-
 class AuthUI {
     constructor() {
         this.token = null;
@@ -11,35 +6,24 @@ class AuthUI {
         this.init();
     }
     
-    /**
-     * Инициализация DOM элементов
-     */
     initElements() {
-        // Поиск контейнера для аутентификации в шапке
         this.authHeader = document.getElementById('authHeader');
-        
-        // Если контейнер не найден, создаем его
         if (!this.authHeader) {
             this.createAuthHeader();
         }
     }
-    
-    /**
-     * Создание контейнера для аутентификации в шапке
-     */
+
     createAuthHeader() {
         const headerContent = document.querySelector('.header-content');
         if (!headerContent) {
             console.warn('Header content container not found');
             return;
         }
-        
-        // Создаем контейнер для аутентификации
+
         this.authHeader = document.createElement('div');
         this.authHeader.className = 'auth-header';
         this.authHeader.id = 'authHeader';
-        
-        // Вставляем контейнер перед кнопкой корзины или в конце
+
         const cartButton = headerContent.querySelector('.cart');
         if (cartButton) {
             headerContent.insertBefore(this.authHeader, cartButton);
@@ -48,9 +32,6 @@ class AuthUI {
         }
     }
     
-    /**
-     * Основная инициализация
-     */
     async init() {
         this.token = this.getToken();
         this.user = null;
@@ -60,7 +41,6 @@ class AuthUI {
             if (userLoaded) {
                 this.renderLoggedIn();
             } else {
-                // Токен недействительный, очищаем и показываем гостя
                 this.clearToken();
                 this.renderGuest();
             }
@@ -71,17 +51,10 @@ class AuthUI {
         this.dispatchAuthChanged();
     }
 
-    /**
-     * Получение токена из sessionStorage
-     */
     getToken() {
         return sessionStorage.getItem('token');
     }
     
-    /**
-     * Загрузка данных пользователя по токену через /api/auth/me
-     * @returns {boolean} Успешна ли загрузка
-     */
     async loadUser() {
         if (!this.token) return false;
         
@@ -97,7 +70,6 @@ class AuthUI {
                 this.user = data.user;
                 return true;
             } else if (response.status === 401) {
-                // Токен недействителен или истек
                 console.log('Token is invalid or expired, clearing...');
                 return false;
             } else {
@@ -110,9 +82,6 @@ class AuthUI {
         }
     }
     
-    /**
-     * Рендеринг состояния "Гость"
-     */
     renderGuest() {
         if (!this.authHeader) return;
         
@@ -123,7 +92,6 @@ class AuthUI {
             </a>
         `;
         
-        // Обработчик клика для кнопки входа
         const signInBtn = this.authHeader.querySelector('.auth-btn');
         if (signInBtn) {
             signInBtn.addEventListener('click', (e) => {
@@ -132,14 +100,10 @@ class AuthUI {
             });
         }
     }
-    
-    /**
-     * Рендеринг состояния "Авторизованный пользователь"
-     */
+
     renderLoggedIn() {
         if (!this.authHeader || !this.user) return;
         
-        // Отображаем email пользователя
         const userEmail = this.user.email || 'User';
         
         this.authHeader.innerHTML = `
@@ -158,7 +122,6 @@ class AuthUI {
             </div>
         `;
         
-        // Добавляем обработчики событий
         const userBtn = this.authHeader.querySelector('.user-btn');
         const logoutBtn = this.authHeader.querySelector('.logout-btn');
         
@@ -175,16 +138,12 @@ class AuthUI {
                 this.handleLogout();
             });
         }
-        
-        // Закрытие выпадающего меню при клике вне его
+
         document.addEventListener('click', () => {
             this.closeDropdown();
         });
     }
     
-    /**
-     * Переключение видимости выпадающего меню
-     */
     toggleDropdown() {
         if (!this.authHeader) return;
         
@@ -196,10 +155,7 @@ class AuthUI {
             userBtn.setAttribute('aria-expanded', isExpanded.toString());
         }
     }
-    
-    /**
-     * Закрытие выпадающего меню
-     */
+
     closeDropdown() {
         if (!this.authHeader) return;
         
@@ -215,15 +171,10 @@ class AuthUI {
         }
     }
     
-    /**
-     * Обработка выхода пользователя
-     */
     handleLogout() {
-        // Удаляем токен из sessionStorage
         this.clearToken();
         this.user = null;
-        
-        // Обновляем интерфейс
+
         this.renderGuest();
         this.closeDropdown();
 
@@ -232,9 +183,6 @@ class AuthUI {
         console.log('User logged out successfully');
     }
     
-    /**
-     * Очистка токена
-     */
     clearToken() {
         sessionStorage.removeItem('token');
         this.token = null;
@@ -250,18 +198,12 @@ class AuthUI {
     }
 }
 
-// Инициализация при загрузке DOM
 document.addEventListener('DOMContentLoaded', () => {
     const authUI = new AuthUI();
-    
-    // Экспортируем объект для возможности ручного обновления
+
     window.authUI = authUI;
 });
 
-/**
- * Вспомогательная функция для обновления состояния аутентификации
- * (например, после успешного входа на странице auth.html)
- */
 function updateAuthState() {
     if (window.authUI) {
         window.authUI.init();

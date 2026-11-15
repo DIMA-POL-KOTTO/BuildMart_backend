@@ -64,10 +64,8 @@ class AuthManager {
     }
     
     init() {
-        // Check if user is already logged in
         const token = this.getToken();
         if (token) {
-            // Redirect to home page if already logged in
             window.location.href = 'index.html';
         }
     }
@@ -202,8 +200,6 @@ class AuthManager {
     
     async handleLogin(e) {
         e.preventDefault();
-        
-        // Validate inputs
         const isEmailValid = this.validateEmail(this.loginEmail, this.loginEmailError);
         const isPasswordValid = this.validatePassword(this.loginPassword, this.loginPasswordError);
         
@@ -232,16 +228,12 @@ class AuthManager {
                 throw new Error(data.error || 'Login failed');
             }
             
-            // Save token
             this.saveToken(data.token);
             
-            // Update auth header state
             updateAuthHeader();
             
-            // Show success message
             this.showSuccess('Login successful! Redirecting...');
             
-            // Redirect to home page after a short delay
             setTimeout(() => {
                 window.location.href = 'index.html';
             }, 1000);
@@ -256,7 +248,6 @@ class AuthManager {
     async handleRegister(e) {
         e.preventDefault();
         
-        // Validate inputs
         const isEmailValid = this.validateEmail(this.registerEmail, this.registerEmailError);
         const isPasswordValid = this.validatePassword(this.registerPassword, this.registerPasswordError);
         const isPasswordConfirmValid = this.validatePasswordConfirm();
@@ -286,17 +277,13 @@ class AuthManager {
                 throw new Error(data.error || 'Registration failed');
             }
             
-            // Show success message and switch to login form
             this.showSuccess('Registration successful! Please sign in.');
             
-            // Clear register form
             this.registerFormElement.reset();
             this.clearErrors();
             
-            // Switch to login form after a delay
             setTimeout(() => {
                 this.switchForm('login');
-                // Auto-fill email in login form
                 this.loginEmail.value = this.registerEmail.value;
             }, 2000);
             
@@ -308,7 +295,6 @@ class AuthManager {
     }
     
     saveToken(token) {
-        // Save token to sessionStorage as per requirements
         sessionStorage.setItem('token', token);
     }
     
@@ -321,16 +307,11 @@ class AuthManager {
     }
 }
 
-// Initialize auth manager when DOM is loaded
 document.addEventListener('DOMContentLoaded', () => {
     new AuthManager();
 });
 
 
-/**
- * Функция для обновления состояния аутентификации в шапке
- * Вызывается после успешного входа для обновления интерфейса
- */
 function updateAuthHeader() {
     if (typeof updateAuthState !== 'undefined') {
         updateAuthState();
@@ -339,5 +320,4 @@ function updateAuthHeader() {
     }
 }
 
-// Экспортируем функции для доступа из других скриптов
 window.updateAuthHeader = updateAuthHeader;
